@@ -1,5 +1,8 @@
 ﻿import { useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
+import coffee1 from "../assets/coffee1.png"
+import coffee2 from "../assets/coffee2.png"
+import coffee3 from "../assets/coffee3.png"
 
 const features = [
   {
@@ -25,18 +28,24 @@ const products = [
     origin: "Dak Lak, Vietnam",
     note: "Bold · Earthy · Strong",
     bg: "bg-stone-800",
+    image: coffee1,
+
   },
   {
     name: "Arabica Light",
     origin: "Da Lat, Vietnam",
     note: "Floral · Bright · Smooth",
     bg: "bg-amber-900",
+    image: coffee2,
+
   },
   {
     name: "Blend Signature",
     origin: "Vietnam",
     note: "Balanced · Rich · Complex",
-    bg: "bg-stone-700",
+    bg: "bg-stone-600",
+    image: coffee3,
+
   },
 ]
 
@@ -85,7 +94,7 @@ export default function Home() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
 
         {/* Background layers */}
-        <div className="absolute inset-0 bg-gradient-to-b from-stone-950 via-stone-900 to-amber-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-amber-950 via-stone-900 to-stone-950" />
 
         {/* Animated steam lines */}
         <div className="absolute bottom-0 left-0 w-full flex justify-center gap-8 pointer-events-none">
@@ -152,7 +161,7 @@ export default function Home() {
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="py-20 px-6 border-t border-stone-800">
+      <section className="py-20 px-6 border-t border-stone-800 bg-amber-950/20">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
           {features.map((f) => (
             <div key={f.title} className="text-center">
@@ -187,9 +196,10 @@ export default function Home() {
               >
                 {/* Placeholder coffee bag illustration */}
 
-                <div className="w-20 h-28 bg-stone-950/40 rounded-sm mb-8 flex items-center justify-center">
-                  <span className="text-4xl">☕</span>
-                </div>
+                <img
+                src={p.image}
+                alt={p.name}
+                className="w-full h-64 object-cover mb-6"/>
                 <p className="text-amber-400 text-xs uppercase tracking-widest font-mono mb-2">
                   {p.origin}
                 </p>
