@@ -3,6 +3,26 @@ import { Link } from "react-router-dom"
 import coffee1 from "../assets/coffee1.png"
 import coffee2 from "../assets/coffee2.png"
 import coffee3 from "../assets/coffee3.png"
+import Grain from "../components/Grain"
+import Scrollbar from "../components/Scrollbar"
+
+
+// Reusable orb background blob
+function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
+  return (
+    <div
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: size,
+        height: size,
+        top, left, right, bottom,
+        background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
+        opacity,
+        transform: "translate(-50%, -50%)",
+      }}
+    />
+  )
+}
 
 const features = [
   {
@@ -27,249 +47,263 @@ const products = [
     name: "Robusta Dark",
     origin: "Dak Lak, Vietnam",
     note: "Bold · Earthy · Strong",
-    bg: "bg-stone-800",
     image: coffee1,
-
   },
   {
     name: "Arabica Light",
     origin: "Da Lat, Vietnam",
     note: "Floral · Bright · Smooth",
-    bg: "bg-amber-900",
     image: coffee2,
-
   },
   {
     name: "Blend Signature",
     origin: "Vietnam",
     note: "Balanced · Rich · Complex",
-    bg: "bg-stone-600",
     image: coffee3,
-
   },
 ]
 
 export default function Home() {
   const heroRef = useRef(null)
-  const taglineRef = useRef(null)
-  const titleRef = useRef(null)
-  const scrollRef = useRef(null)
-
-  useEffect(() => {
-  const els = [taglineRef.current, scrollRef.current] // titleRef.current
-  
-  // First set all elements to invisible immediately
-  els.forEach((el) => {
-    if (!el) return
-    el.style.opacity = "0"
-    el.style.transform = "translateY(40px)"
-  })
-
-  // Then animate each one with a proper staggered delay
-  els.forEach((el, i) => {
-    if (!el) return
-    setTimeout(() => {
-      el.style.transition = "opacity 1.2s ease, transform 1.2s ease"
-      el.style.opacity = "1"
-      el.style.transform = "translateY(0)"
-    }, 300 + i * 500) // 300ms, 800ms, 1300ms
-  })
-}, [])
 
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return
       const scrollY = window.scrollY
-      heroRef.current.style.transform = `translateY(${scrollY * 0.4}px)`
-      heroRef.current.style.opacity = `${1 - scrollY / 600}`
+      heroRef.current.style.opacity = `${1 - scrollY / 500}`
+      heroRef.current.style.transform = `translateY(${scrollY * 0.3}px)`
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <div className="bg-stone-950 text-stone-100">
+    <div style={{ background: "#020100", color: "#f5f0e8", position: "relative", overflow: "hidden", width: "100%" }}>
 
-      {/* HERO SECTION */}
+      <Grain opacity={0.15} />
+      <Scrollbar />
+
+      {/* ── HERO ── */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <Orb top="5%" left="70%" size="80vw" opacity={0.5} />
+        <Orb top="60%" left="23%" size="60vw" opacity={0.2} />
+        <Orb top="99%" left="99%" size="55vw" opacity={0.4} />
+        <Orb top="20%" left="48%" size="35vw" opacity={0.1} />
+        <Orb top="15%" left="30%" size="35vw" opacity={0.11} />
 
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-950 via-stone-900 to-stone-950" />
-
-        {/* Animated steam lines */}
-        <div className="absolute bottom-0 left-0 w-full flex justify-center gap-8 pointer-events-none">
-          {[...Array(7)].map((_, i) => (
-            <div
-              key={i}
-              style={{
-                height: `${20 + i * 6}vh`,
-                width: "1px",
-                background: `linear-gradient(to top, rgba(217,119,6,0.3), transparent)`,
-                animation: `pulse ${2 + i * 0.3}s ease-in-out infinite alternate`,
-                animationDelay: `${i * 0.2}s`,
-              }}
-            />
-          ))}
+        <div ref={heroRef} className="relative z-10 text-center">
+          <h1 style={{
+                fontFamily: "'Bodoni Moda', serif",
+                fontSize: "clamp(5rem, 15vw, 14rem)",
+                color: "#f5f0e8",
+                letterSpacing: "-0.02em",
+                lineHeight: 1,
+                fontWeight: 800,
+                fontStyle: "italic",}}
+                >
+                </h1>
         </div>
+        {/* ── HERO POEM ── */}
+<div
+  className="absolute z-10 flex justify-between w-full"
+  style={{
+    bottom: "40%",         // ← vertical position from bottom of hero (increase = higher)
+    paddingLeft: "15vw",   // ← distance from left edge
+    paddingRight: "12vw",  // ← distance from right edge
+    gap: "4vw",            // ← minimum space between the two columns, scales with screen
+    alignItems: "flex-start",
+  }}
+>
+  {/* Vietnamese — left */} 
+  <div style={{ fontFamily: "Courier New, monospace", fontStyle: "italic", animation: "fadeIn 1.5s ease forwards", animationDelay: "0.3s", opacity: 0,  }}> 
+    {[
+      "Đất nâu ôm giọt mưa rơi,",                                                   // duration                 // delay before it starts // start invisible
+      "Người đi gieo hạt giữa trời mênh mông,",
+      "Hương cà phê thức trong lòng,",
+      "Sớm mai tỉnh giấc, ấm nồng nhân gian.",
+    ].map((line, i) => (
+      <p key={i} style={{
+        color: "#f5f0e8",
+        fontSize: "clamp(0.75rem, 1.2vw, 2rem)", // ← text size
+        lineHeight: "2",                          // ← space between lines
+        margin: 0,
+        whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
+      }}>{line}</p>
+    ))}
+  </div>  
 
-        {/* Hero content */}
-        <div ref={heroRef} className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <p
-            ref={taglineRef}
-            className="text-amber-400 uppercase tracking-[0.5em] text-xs mb-8 font-mono"
-          >
-            From Vietnam to your cup
+  {/* French — right */}
+  <div style={{ fontFamily: "Courier New, monospace", fontStyle: "italic", textAlign: "left", animation: "fadeIn 1.5s ease forwards", animationDelay: "0.3s", opacity: 0,  }}>
+    {[
+      "La terre brune accueille la pluie qui tombe,",
+      "L'homme sème au cœur du ciel immense,",
+      "Le parfum du café s'éveille en lui,",
+      "Et l'aube réchauffe doucement le monde.",
+    ].map((line, i) => (
+      <p key={i} style={{
+        color: "#f5f0e8",
+        fontSize: "clamp(0.75rem, 1.2vw, 2rem)", // ← text size
+        lineHeight: "2",                          // ← space between lines
+        margin: 0,
+        whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
+      }}>{line}</p>
+    ))}
+  </div>
+</div>
+      </section>
+
+      {/* ── MISSION ── */}
+      <section className="relative py-40 px-6 flex items-center justify-center overflow-hidden">
+        <Orb top="50%" left="50%" size={800} opacity={0.15} />
+        <div className="relative z-10 text-center max-w-2xl mx-auto">
+          <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs mb-8">
+            Our mission
           </p>
-
-          <h1
-            ref={titleRef}
-            className="text-8xl md:text-[10rem] font-serif text-amber-50 tracking-tight leading-none mb-12"
-            style={{ fontFamily: "'Bodoni Moda', serif" }}
+          <h2
+            className="font-bold leading-tight"
+            style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(2rem, 4vw, 3.5rem)",
+              color: "#f5f0e8",
+            }}
           >
-            Cà Phê In
-          </h1>
+            Bringing the finest Vietnamese coffee to your table
+          </h2>
+          <div className="w-12 h-px bg-amber-800/60 mx-auto mt-10" />
+          <p className="font-mono text-stone-500 text-sm leading-relaxed mt-8">
+            Vietnam is the world's second largest coffee producer, yet its exceptional
+            quality remains largely unknown in Europe. Caphein is changing that.
+          </p>
+        </div>
+      </section>
 
-          <div ref={scrollRef} className="flex flex-col items-center gap-3">
-            <Link
-              to="/products"
-              className="border border-amber-600 text-amber-400 hover:bg-amber-600 hover:text-stone-950 px-10 py-3 text-xs uppercase tracking-widest transition-all duration-300 font-mono"
-            >
-              Discover our coffees
-            </Link>
-            <p className="text-stone-500 text-xs uppercase tracking-widest mt-6 animate-bounce">
-              scroll down
-            </p>
+      {/* ── FEATURES ── */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        <Orb top="50%" left="20%" size={900} opacity={0.12} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs text-center mb-16">
+            Why caphein
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            {features.map((f) => (
+              <div key={f.title} className="text-center">
+                <div className="text-3xl mb-6">{f.icon}</div>
+                <h3
+                  className="font-bold mb-4"
+                  style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.2rem", color: "#f5f0e8" }}
+                >
+                  {f.title}
+                </h3>
+                <p className="font-mono text-stone-500 text-xs leading-relaxed">{f.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* TAGLINE SECTION */}
-      <section className="py-32 px-6 text-center max-w-3xl mx-auto">
-        <p className="text-stone-400 uppercase tracking-[0.4em] text-xs mb-6 font-mono">
-          Our mission
-        </p>
-        <h2
-          className="text-4xl md:text-5xl font-serif text-amber-100 leading-tight mb-8"
-          style={{ fontFamily: "'Bodoni Moda', serif" }}
-        >
-          Bringing the finest Vietnamese coffee to your table
-        </h2>
-        <p className="text-stone-400 text-sm leading-relaxed font-mono">
-          Vietnam is the world's second largest coffee producer, yet its exceptional quality
-          remains largely unknown in Europe. Ca Phe In is changing that — one cup at a time.
-        </p>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section className="py-20 px-6 border-t border-stone-800 bg-amber-950/20">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-          {features.map((f) => (
-            <div key={f.title} className="text-center">
-              <div className="text-4xl mb-6">{f.icon}</div>
-              <h3 className="text-amber-100 text-lg font-serif mb-3" style={{ fontFamily: "'Bodoni Moda', serif" }}>{f.title}</h3>
-              <p className="text-stone-400 text-sm leading-relaxed font-mono">{f.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* PRODUCTS PREVIEW SECTION */}
-      <section className="py-32 px-6 border-t border-stone-800">
-        <div className="max-w-5xl mx-auto">
+      {/* ── PRODUCTS ── */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        <Orb top="30%" left="80%" size={600} opacity={0.2} />
+        <Orb top="80%" left="10%" size={500} opacity={0.15} />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-amber-400 uppercase tracking-[0.4em] text-xs mb-4 font-mono">
+            <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs mb-4">
               Our selection
             </p>
             <h2
-              className="text-4xl font-serif text-amber-100"
-              style={{ fontFamily: "'Bodoni Moda', serif" }}
+              className="font-bold"
+              style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3rem)", color: "#f5f0e8" }}
             >
               Three coffees, one origin
             </h2>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map((p) => (
               <div
                 key={p.name}
-                className={`${p.bg} p-10 flex flex-col items-center text-center group hover:scale-105 transition-transform duration-500 cursor-pointer`}
+                className="group cursor-pointer"
+                style={{
+                  border: "1px solid rgba(70,30,5,0.3)",
+                  background: "rgba(70,30,5,0.06)",
+                  backdropFilter: "blur(4px)",
+                  transition: "border-color 0.4s ease",
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(120,53,15,0.6)"}
+                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(70,30,5,0.3)"}
               >
-                {/* Placeholder coffee bag illustration */}
-
-                <img
-                src={p.image}
-                alt={p.name}
-                className="w-full h-64 object-cover mb-6"/>
-                <p className="text-amber-400 text-xs uppercase tracking-widest font-mono mb-2">
-                  {p.origin}
-                </p>
-                <h3
-                  className="text-amber-50 text-xl font-serif mb-3"
-                  style={{ fontFamily: "'Bodoni Moda', serif" }}
-                >
-                  {p.name}
-                </h3>
-                <p className="text-stone-400 text-xs font-mono">{p.note}</p>
+                <img src={p.image} alt={p.name} className="w-full h-56 object-cover" />
+                <div className="p-6 text-center">
+                  <p className="font-mono text-amber-800 text-xs uppercase tracking-widest mb-2">{p.origin}</p>
+                  <h3
+                    className="font-bold mb-2"
+                    style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.3rem", color: "#f5f0e8" }}
+                  >
+                    {p.name}
+                  </h3>
+                  <p className="font-mono text-stone-600 text-xs">{p.note}</p>
+                </div>
               </div>
             ))}
           </div>
-
           <div className="text-center mt-12">
             <Link
               to="/products"
-              className="border border-amber-600 text-amber-400 hover:bg-amber-600 hover:text-stone-950 px-10 py-3 text-xs uppercase tracking-widest transition-all duration-300 font-mono inline-block"
+              className="font-mono text-xs uppercase tracking-widest text-stone-400 hover:text-amber-700 transition-colors duration-300"
+              style={{ borderBottom: "1px solid rgba(70,30,5,0.5)", paddingBottom: "4px" }}
             >
-              View all products
+              View all products →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ORIGIN STORY TEASER */}
-      <section className="py-32 px-6 border-t border-stone-800 bg-amber-950/20">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-amber-400 uppercase tracking-[0.4em] text-xs mb-6 font-mono">
+      {/* ── OUR STORY TEASER ── */}
+      <section className="relative py-40 px-6 overflow-hidden">
+        <Orb top="50%" left="50%" size={700} opacity={0.2} />
+        <div className="relative z-10 max-w-3xl mx-auto text-center">
+          <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs mb-8">
             Our story
           </p>
           <h2
-            className="text-4xl md:text-5xl font-serif text-amber-100 leading-tight mb-8"
-            style={{ fontFamily: "'Bodoni Moda', serif" }}
+            className="font-bold leading-tight mb-10"
+            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "#f5f0e8" }}
           >
             Born in the highlands of Vietnam
           </h2>
-          <p className="text-stone-400 text-sm leading-relaxed font-mono mb-10">
+          <p className="font-mono text-stone-500 text-sm leading-relaxed mb-12">
             From the terraced fields of Dak Lak to the artisan roasters of Da Lat,
-            every bag of Ca Phe In carries the story of the people who grew it.
+            every bag of Caphein carries the story of the people who grew it.
           </p>
           <Link
             to="/our-story"
-            className="border border-amber-600 text-amber-400 hover:bg-amber-600 hover:text-stone-950 px-10 py-3 text-xs uppercase tracking-widest transition-all duration-300 font-mono inline-block"
+            className="font-mono text-xs uppercase tracking-widest text-stone-400 hover:text-amber-700 transition-colors duration-300"
+            style={{ borderBottom: "1px solid rgba(70,30,5,0.5)", paddingBottom: "4px" }}
           >
-            Read our story
+            Read our story →
           </Link>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-stone-800 py-12 px-6 text-center">
-        <p
-          className="text-amber-100 text-2xl font-serif mb-4"
-          style={{ fontFamily: "'Bodoni Moda', serif" }}
-        >
-          Ca Phe In
-        </p>
-        <p className="text-stone-500 text-xs font-mono uppercase tracking-widest mb-6">
-          From Vietnam to your cup
-        </p>
-        <div className="flex justify-center gap-8 text-stone-500 text-xs font-mono uppercase tracking-widest">
-          <Link to="/our-story" className="hover:text-amber-400 transition-colors">Our Story</Link>
-          <Link to="/products" className="hover:text-amber-400 transition-colors">Products</Link>
-          <Link to="/services" className="hover:text-amber-400 transition-colors">Services</Link>
-          <Link to="/contact" className="hover:text-amber-400 transition-colors">Contact</Link>
+      {/* ── FOOTER ── */}
+      <footer className="relative py-16 px-6 overflow-hidden">
+        <Orb top="70%" left="99%" size={600} opacity={0.15} />
+        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8">
+          <span
+            className="font-bold"
+            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2rem", color: "#f5f0e8" }}
+          >
+            caphein
+          </span>
+          <div className="flex gap-10 font-mono text-stone-600 text-xs uppercase tracking-widest">
+            <Link to="/our-story" className="hover:text-amber-700 transition-colors">Histoire</Link>
+            <Link to="/culture" className="hover:text-amber-700 transition-colors">Culture</Link>
+            <Link to="/products" className="hover:text-amber-700 transition-colors">Produits</Link>
+            <Link to="/contact" className="hover:text-amber-700 transition-colors">Contact</Link>
+          </div>
+          <p className="font-mono text-stone-700 text-xs">
+            © 2025 Caphein. All rights reserved.
+          </p>
         </div>
-        <p className="text-stone-700 text-xs font-mono mt-8">
-          © 2025 Ca Phe In. All rights reserved.
-        </p>
       </footer>
 
     </div>
