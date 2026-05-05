@@ -17,8 +17,8 @@ const leftLinks = [
 ]
 
 const rightLinks = [
-  { label: "Nouveautés", to: "/nouveaute", icon: navPartenaires, circle: false },
   { label: "Nos produits", to: "/products", icon: navProduits, circle: false },
+  { label: "Nouveautés", to: "/nouveaute", icon: navPartenaires, circle: false },  
   { label: "Contact", to: "/contact", icon: navContact, circle: false, marginRight: "2rem" },
 ]
 
@@ -43,15 +43,15 @@ function NavIcon({ label, to, icon, circle, marginRight }) {
         <div
           className="rounded-full border border-stone-600/40 flex items-center justify-center group-hover:border-amber-700/60 transition-all duration-300"
           style={{
-            width: "3.5rem",          // ← circle width
+            width: "2.5rem",          // ← circle width
             height: "2.5rem",         // ← circle height
             background: "rgba(70,30,5,0.15)",
             backdropFilter: "blur(8px)",
           }}
         >
           <img src={icon} alt={label} style={{
-            width: "2rem",          // ← icon size inside circle
-            height: "2rem",
+            width: "2rem",          // ← icon size inside circle    IN CIRCLE
+            height: "1.5rem",
             objectFit: "contain",
             filter: "brightness(0) invert(1)",
           }} />
@@ -65,8 +65,8 @@ function NavIcon({ label, to, icon, circle, marginRight }) {
           justifyContent: "center",
         }}>
           <img src={icon} alt={label} style={{
-            width: "2rem",          // ← icon size without circle
-            height: "2rem",
+            width: "2rem",          // ← icon size without circle   OUT CIRCLE
+            height: "1.5rem",
             objectFit: "contain",
             filter: "brightness(0) invert(1)",
           }} />
@@ -104,14 +104,14 @@ function PillIcon({ label, to, icon }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: "2rem",                // ← clickable area width inside pill
+        width: "1.5rem",                // ← clickable area width inside pill
         height: "2rem",               // ← clickable area height inside pill
       }}
     >
       <Link to={to} className="flex items-center justify-center">
         <img src={icon} alt={label} style={{
-          width: "2.4rem",            // ← icon size inside pill
-          height: "2.4rem",           // ← icon size inside pill
+          width: "2rem",            // ← icon size inside pill
+          height: "1.5rem",           // ← icon size inside pill            PILL
           objectFit: "contain",
           filter: "brightness(0) invert(1)",
         }} />
@@ -155,7 +155,7 @@ export default function Navbar() {
       style={{
         background: scrolled ? "rgba(2,1,0,0.85)" : "transparent",
         // ↑ 0.85 = darkness of scroll background (0 invisible → 1 fully black)
-        backdropFilter: scrolled ? "blur(8px)" : "none",
+        backdropFilter: scrolled ? "blur(5px)" : "none",
         // ↑ frosted glass on scroll — remove line for plain dark background
         transition: "background 0.4s ease, backdrop-filter 0.4s ease",
         // ↑ 0.4s = fade speed
@@ -166,20 +166,20 @@ export default function Navbar() {
       <div
         className="absolute flex items-center gap-1"
         style={{
-          top: "1.7rem",    // ← vertical position from top
-          right: "4.1rem",    // ← distance from right edge (increase = more to the left)
+          top: "1.8rem",    // ← vertical position from top
+          right: "3.7rem",    // ← distance from right edge (increase = more to the left)
         }}
       >
         <button
           onClick={() => setLang("FR")}
           className={`font-mono uppercase tracking-widest transition-colors duration-300 ${lang === "FR" ? "text-amber-500" : "text-stone-500 hover:text-amber-600"}`}
-          style={{ fontSize: "15px" }} // FR size
+          style={{ fontSize: "13px" }} // FR size
         >FR</button>
         <span className="text-stone-600" style={{ fontSize: "9px" }}>/</span>
         <button
           onClick={() => setLang("EN")}
           className={`font-mono uppercase tracking-widest transition-colors duration-300 ${lang === "EN" ? "text-amber-500" : "text-stone-500 hover:text-amber-600"}`}
-          style={{ fontSize: "15px" }} // EN size
+          style={{ fontSize: "13px" }} // EN size
         >EN</button>
       </div>
 
@@ -189,7 +189,7 @@ export default function Navbar() {
         style={{
           paddingLeft: "2.5rem",    // ← left edge margin
           paddingRight: "2.5rem",   // ← right edge margin
-          paddingTop: "2rem",       // ← top padding / shifts everything down
+          paddingTop: "1.5rem",       // ← top padding / shifts everything down          ----------------
           paddingBottom: "1.5rem",  // ← bottom padding
         }}
       >
@@ -215,7 +215,7 @@ export default function Navbar() {
         >
           <span style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+            fontSize: "clamp(4rem, 5.5vw, 5.5rem)",           
             // ↑ clamp(MIN, PREFERRED, MAX) — scales between screens
             color: "#f5f0e8",
             fontWeight: 700,

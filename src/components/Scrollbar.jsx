@@ -70,9 +70,9 @@ export default function Scrollbar() {
   return (
     <div style={{
       position: "fixed",
-      right: "calc(50% - 935px)",  // ← horizontal position, adjust to move left/right
+      right: "1.5rem",  // ← horizontal position, adjust to move left/right    SCROLLBAR
       top: "10rem",               // ← distance from top of screen
-      bottom: "10rem",            // ← distance from bottom of screen
+      bottom: "5rem",            // ← distance from bottom of screen
       height: "auto",
       width: "1px",              // ← track thickness
       zIndex: 9998,
@@ -97,7 +97,7 @@ export default function Scrollbar() {
         ref={trackRef}
         style={{
           flex: 1,
-          width: "1px",
+          width: "2px",
           background: "rgba(245,240,232,0.2)",  // ← track line color
           position: "relative",
         }}

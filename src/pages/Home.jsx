@@ -7,7 +7,7 @@ import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
 
 
-// Reusable orb background blob
+// orb background blob
 function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
   return (
     <div
@@ -108,8 +108,8 @@ export default function Home() {
   className="absolute z-10 flex justify-between w-full"
   style={{
     bottom: "40%",         // ← vertical position from bottom of hero (increase = higher)
-    paddingLeft: "15vw",   // ← distance from left edge
-    paddingRight: "12vw",  // ← distance from right edge
+    paddingLeft: "23vw",   // ← distance from left edge
+    paddingRight: "19vw",  // ← distance from right edge
     gap: "4vw",            // ← minimum space between the two columns, scales with screen
     alignItems: "flex-start",
   }}
@@ -124,7 +124,7 @@ export default function Home() {
     ].map((line, i) => (
       <p key={i} style={{
         color: "#f5f0e8",
-        fontSize: "clamp(0.75rem, 1.2vw, 2rem)", // ← text size
+        fontSize: "clamp(0.75rem, 1vw, 1.5rem)", // ← text size
         lineHeight: "2",                          // ← space between lines
         margin: 0,
         whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
@@ -142,7 +142,7 @@ export default function Home() {
     ].map((line, i) => (
       <p key={i} style={{
         color: "#f5f0e8",
-        fontSize: "clamp(0.75rem, 1.2vw, 2rem)", // ← text size
+        fontSize: "clamp(0.75rem, 1vw, 2rem)", // ← text size
         lineHeight: "2",                          // ← space between lines
         margin: 0,
         whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
