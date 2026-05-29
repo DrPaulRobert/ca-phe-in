@@ -39,7 +39,7 @@ const coffees = [
     altitude: "800 m",
     notes: ["Épicé", "Chocolaté", "Équilibré"],
     description:
-      "Hybride robuste et aromatique, le Catimor de Dak Lak offre un profil généreux avec des notes de chocolat noir et d'épices doucesB2B.",
+      "Hybride robuste et aromatique, le Catimor de Dak Lak offre un profil généreux avec des notes de chocolat noir et d'épices douces.",
     roast: "Torréfaction moyenne",
     color: "#7a2e0e",
   },
