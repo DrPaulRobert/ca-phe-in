@@ -1,4 +1,4 @@
-﻿import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
@@ -17,6 +17,42 @@ function Orb({ top, left, size = "70vw", opacity = 0.25 }) {
         transform: "translate(-50%, -50%)",
       }}
     />
+  )
+}
+
+// ─── FADE IN ON SCROLL ────────────────────────────────────────────────────────
+// Wraps any block — fades + slides up when it enters the viewport
+function FadeIn({ children, delay = 0 }) {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = "1"
+          el.style.transform = "translateY(0)"
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: 0,
+        transform: "translateY(28px)",
+        transition: `opacity 0.75s ease ${delay}s, transform 0.75s ease ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
   )
 }
 
@@ -53,11 +89,13 @@ function BodyText({ children }) {
 // ─── DIVIDER ─────────────────────────────────────────────────────────────────
 function Divider() {
   return (
-    <div style={{
-      width: "48px", height: "1px",
-      background: "rgba(138,43,11,0.5)",
-      margin: "3rem 0",
-    }} />
+    <FadeIn>
+      <div style={{
+        width: "48px", height: "1px",
+        background: "rgba(138,43,11,0.5)",
+        margin: "3rem 0",
+      }} />
+    </FadeIn>
   )
 }
 
@@ -65,48 +103,50 @@ function Divider() {
 const stats = [
   { value: "2ème",             label: "Le Vietnam, 2ème exportateur mondial de café" },
   { value: "1857",             label: "Début de la culture du café au Vietnam" },
-  { value: "Vietnam · France", label: "2 pays · 1 passion" },
+  { value: "Vietnam · France", label: "2 pays, 1 passion pour le café" },
 ]
 
 function StatsBar() {
   return (
-    <div style={{
-      display: "flex",
-      flexWrap: "wrap",
-      borderTop: "1px solid rgba(70,30,5,0.3)",
-      borderBottom: "1px solid rgba(70,30,5,0.3)",
-      marginBottom: "6rem",
-    }}>
-      {stats.map((s, i) => (
-        <div key={i} style={{
-          flex: "1 1 200px",
-          padding: "2.5rem 2rem",
-          borderRight: i < stats.length - 1 ? "1px solid rgba(70,30,5,0.3)" : "none",
-          textAlign: "center",
-        }}>
-          <p style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
-            color: "#f5f0e8",
-            fontWeight: 800,
-            lineHeight: 1,
-            marginBottom: "0.6rem",
+    <FadeIn delay={0.1}>
+      <div style={{
+        display: "flex",
+        flexWrap: "wrap",
+        borderTop: "1px solid rgba(70,30,5,0.3)",
+        borderBottom: "1px solid rgba(70,30,5,0.3)",
+        marginBottom: "6rem",
+      }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            flex: "1 1 200px",
+            padding: "2.5rem 2rem",
+            borderRight: i < stats.length - 1 ? "1px solid rgba(70,30,5,0.3)" : "none",
+            textAlign: "center",
           }}>
-            {s.value}
-          </p>
-          <p style={{
-            fontFamily: "Courier New, monospace",
-            fontSize: "11px",
-            color: "rgba(245,240,232,0.4)",
-            textTransform: "uppercase",
-            letterSpacing: "0.2em",
-            lineHeight: 1.6,
-          }}>
-            {s.label}
-          </p>
-        </div>
-      ))}
-    </div>
+            <p style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
+              color: "#f5f0e8",
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: "0.6rem",
+            }}>
+              {s.value}
+            </p>
+            <p style={{
+              fontFamily: "Courier New, monospace",
+              fontSize: "11px",
+              color: "rgba(245,240,232,0.4)",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              lineHeight: 1.6,
+            }}>
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </div>
+    </FadeIn>
   )
 }
 
@@ -114,61 +154,65 @@ function StatsBar() {
 function TextSection({ label, heading, paragraphs, align = "left" }) {
   const isRight = align === "right"
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: isRight ? "flex-end" : "flex-start",
-      marginBottom: "6rem",
-    }}>
-      <div style={{ maxWidth: "620px", width: "100%" }}>
-        <SectionLabel>{label}</SectionLabel>
-        {heading && (
-          <h2 style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-            color: "#f5f0e8",
-            fontWeight: 800,
-            lineHeight: 1.15,
-            marginBottom: "1.75rem",
-          }}>
-            {heading}
-          </h2>
-        )}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          {paragraphs.map((p, i) => (
-            <BodyText key={i}>{p}</BodyText>
-          ))}
+    <FadeIn>
+      <div style={{
+        display: "flex",
+        justifyContent: isRight ? "flex-end" : "flex-start",
+        marginBottom: "6rem",
+      }}>
+        <div style={{ maxWidth: "620px", width: "100%" }}>
+          <SectionLabel>{label}</SectionLabel>
+          {heading && (
+            <h2 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "#f5f0e8",
+              fontWeight: 800,
+              lineHeight: 1.15,
+              marginBottom: "1.75rem",
+            }}>
+              {heading}
+            </h2>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            {paragraphs.map((p, i) => (
+              <BodyText key={i}>{p}</BodyText>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </FadeIn>
   )
 }
 
 // ─── PULL QUOTE ───────────────────────────────────────────────────────────────
 function PullQuote({ text }) {
   return (
-    <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
-      <div style={{
-        width: "1px", height: "60px",
-        background: "rgba(138,43,11,0.4)",
-        margin: "0 auto 3rem",
-      }} />
-      <p style={{
-        fontFamily: "'Bodoni Moda', serif",
-        fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
-        color: "#f5f0e8",
-        fontWeight: 700,
-        lineHeight: 1.4,
-        maxWidth: "700px",
-        margin: "0 auto",
-      }}>
-        {text}
-      </p>
-      <div style={{
-        width: "1px", height: "60px",
-        background: "rgba(138,43,11,0.4)",
-        margin: "3rem auto 0",
-      }} />
-    </div>
+    <FadeIn>
+      <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
+        <div style={{
+          width: "1px", height: "60px",
+          background: "rgba(138,43,11,0.4)",
+          margin: "0 auto 3rem",
+        }} />
+        <p style={{
+          fontFamily: "'Bodoni Moda', serif",
+          fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
+          color: "#f5f0e8",
+          fontWeight: 700,
+          lineHeight: 1.4,
+          maxWidth: "700px",
+          margin: "0 auto",
+        }}>
+          {text}
+        </p>
+        <div style={{
+          width: "1px", height: "60px",
+          background: "rgba(138,43,11,0.4)",
+          margin: "3rem auto 0",
+        }} />
+      </div>
+    </FadeIn>
   )
 }
 
@@ -192,28 +236,30 @@ export default function OurStory() {
         <Orb top="10%" left="80%" size="60vw" opacity={0.25} />
         <Orb top="90%" left="10%" size="40vw" opacity={0.12} />
         <div className="relative z-10 max-w-5xl mx-auto">
-          <SectionLabel>Notre Histoire</SectionLabel>
-          <h1 style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-            color: "#f5f0e8",
-            fontWeight: 800,
-            lineHeight: 1,
-            marginBottom: "2rem",
-            whiteSpace: "nowrap",
-          }}>
-            Un pont entre deux mondes
-          </h1>
-          <p style={{
-            fontFamily: "Courier New, monospace",
-            fontSize: "15px",
-            color: "rgba(245,240,232,0.45)",
-            maxWidth: "480px",
-            lineHeight: 1.85,
-          }}>
-            Du Vietnam à la France, nous mettons en lumière
-            des cafés d'exception encore méconnus en Europe.
-          </p>
+          <FadeIn>
+            <SectionLabel>Notre Histoire</SectionLabel>
+            <h1 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "#f5f0e8",
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: "2rem",
+              whiteSpace: "nowrap",
+            }}>
+              Un pont entre deux mondes
+            </h1>
+            <p style={{
+              fontFamily: "Courier New, monospace",
+              fontSize: "15px",
+              color: "rgba(245,240,232,0.45)",
+              maxWidth: "480px",
+              lineHeight: 1.85,
+            }}>
+              Du Vietnam à la France, nous mettons en lumière
+              des cafés d'exception encore méconnus en Europe.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
@@ -293,35 +339,37 @@ export default function OurStory() {
       {/* ── CTA ── */}
       <section className="relative px-6 pb-32 overflow-hidden">
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <SectionLabel>Nos produits</SectionLabel>
-          <h2 style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-            color: "#f5f0e8",
-            fontWeight: 800,
-            marginBottom: "2rem",
-          }}>
-            Découvrez nos cafés vietnamiens
-          </h2>
-          <Link
-            to="/products"
-            onClick={() => window.scrollTo(0, 0)}
-            style={{
-              fontFamily: "Courier New, monospace",
-              fontSize: "13px",
-              textTransform: "uppercase",
-              letterSpacing: "0.25em",
-              color: "rgba(245,240,232,0.5)",
-              borderBottom: "1px solid rgba(70,30,5,0.5)",
-              paddingBottom: "4px",
-              textDecoration: "none",
-              transition: "color 0.3s ease",
-            }}
-            onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
-            onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.5)"}
-          >
-            Voir nos produits →
-          </Link>
+          <FadeIn>
+            <SectionLabel>Nos produits</SectionLabel>
+            <h2 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "#f5f0e8",
+              fontWeight: 800,
+              marginBottom: "2rem",
+            }}>
+              Découvrez nos cafés vietnamiens
+            </h2>
+            <Link
+              to="/products"
+              onClick={() => window.scrollTo(0, 0)}
+              style={{
+                fontFamily: "Courier New, monospace",
+                fontSize: "13px",
+                textTransform: "uppercase",
+                letterSpacing: "0.25em",
+                color: "rgba(245,240,232,0.5)",
+                borderBottom: "1px solid rgba(70,30,5,0.5)",
+                paddingBottom: "4px",
+                textDecoration: "none",
+                transition: "color 0.3s ease",
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
+              onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.5)"}
+            >
+              Voir nos produits →
+            </Link>
+          </FadeIn>
         </div>
       </section>
 
