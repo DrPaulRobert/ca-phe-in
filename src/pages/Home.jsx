@@ -5,6 +5,7 @@ import coffee2 from "../assets/coffee2.png"
 import coffee3 from "../assets/coffee3.png"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
+import Footer from "../components/Footer"
 
 
 // orb background blob
@@ -285,26 +286,7 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="relative py-16 px-6 overflow-hidden">
-        <Orb top="70%" left="99%" size={600} opacity={0.15} />
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8">
-          <span
-            className="font-bold"
-            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2rem", color: "#f5f0e8" }}
-          >
-            caphein
-          </span>
-          <div className="flex gap-10 font-mono text-stone-600 text-xs uppercase tracking-widest">
-            <Link to="/our-story" className="hover:text-amber-700 transition-colors">Histoire</Link>
-            <Link to="/culture" className="hover:text-amber-700 transition-colors">Culture</Link>
-            <Link to="/products" className="hover:text-amber-700 transition-colors">Produits</Link>
-            <Link to="/contact" className="hover:text-amber-700 transition-colors">Contact</Link>
-          </div>
-          <p className="font-mono text-stone-700 text-xs">
-            © 2025 Caphein. All rights reserved.
-          </p>
-        </div>
-      </footer>
+        <Footer />
 
     </div>
   )
