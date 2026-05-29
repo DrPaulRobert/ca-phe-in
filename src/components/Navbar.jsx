@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import { Link } from "react-router-dom"
 import navMenu from "../assets/nav-menu.png"
 import navHistoire from "../assets/nav-histoire.png"
@@ -139,15 +140,18 @@ function PillIcon({ label, to, icon }) {
 // MAIN NAVBAR
 // ─────────────────────────────────────────────
 export default function Navbar() {
+  const { pathname } = useLocation()
   const [lang, setLang] = useState("FR")
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
+    // Threshold: 1px on /partenaires, 50px everywhere else
+    const threshold = pathname === "/partenaires" ? 1 : 50
+    const handleScroll = () => setScrolled(window.scrollY > threshold)
     // ↑ 50px scroll threshold before background appears
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [pathname])
 
   return (
     <nav
