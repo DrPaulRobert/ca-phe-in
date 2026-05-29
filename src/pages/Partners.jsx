@@ -50,13 +50,13 @@ const francePartners = [
     id: "paris",
     name: "Partenaire Paris",
     city: "Paris",
-    description: "Torréfacteur artisanal installé dans le 11ème arrondissement, spécialisé dans la mise en valeur des origines asiatiques depuis 2018.",
+    description: "Torréfacteur artisanal installé dans le 11ème arrondissement.",
   },
   {
     id: "toulouse",
     name: "Partenaire Toulouse",
     city: "Toulouse",
-    description: "Distributeur régional couvrant le Sud-Ouest de la France, partenaire privilégié pour la restauration et les entreprises locales.",
+    description: "Distributeur régional couvrant le Sud-Ouest de la France.",
   },
 ]
 
@@ -65,13 +65,13 @@ const vietnamPartners = [
     id: "hanoi",
     name: "Partenaire Hanoi",
     city: "Hanoi",
-    description: "Torréfacteur historique de la capitale, maîtrisant les méthodes traditionnelles vietnamiennes depuis trois générations.",
+    description: "Torréfacteur historique de la capitale.",
   },
   {
     id: "daklak",
     name: "Partenaire Dak Lak",
     city: "Dak Lak",
-    description: "Producteur et coopérative agricole au cœur des Hauts Plateaux, source principale de notre Robusta et Catimor d'exception.",
+    description: "Producteur et coopérative agricole au cœur des Hauts Plateaux.",
   },
 ]
 
