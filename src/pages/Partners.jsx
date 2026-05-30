@@ -5,6 +5,17 @@ import Footer from "../components/Footer"
 import franceSrc from "../assets/FranceTransparent.png"
 import vietnamSrc from "../assets/VietnamTransparent.png"
 
+// ─── MOBILE DETECTION HOOK ───────────────────────────────────────────────────
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  useEffect(() => {
+    const handle = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", handle)
+    return () => window.removeEventListener("resize", handle)
+  }, [])
+  return isMobile
+}
+
 // ─── ORB ─────────────────────────────────────────────────────────────────────
 function Orb({ top, left, size = "60vw", opacity = 0.2 }) {
   return (
@@ -22,10 +33,24 @@ function Orb({ top, left, size = "60vw", opacity = 0.2 }) {
 // Increase x → moves right │ Increase y → moves down
 // ─────────────────────────────────────────────────────────────────────────────
 const DOT_POSITIONS = {
-  paris:    { x: 46, y: 28 },
-  toulouse: { x: 42, y: 70 },
-  hanoi:    { x: 49, y: 16 },
-  daklak:   { x: 67.5, y: 71.5 },
+  paris:    { x: 46, y: 28, lx:  12, ly: 0  },
+  toulouse: { x: 42, y: 70, lx:  12, ly: 0  },
+  hanoi:    { x: 49, y: 16, lx:  12, ly: 0  },
+  daklak:   { x: 67, y: 71, lx:  -18, ly: -15  },
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ── EDIT MOBILE DOT POSITIONS HERE ───────────────────────────────────────────
+// x, y   → dot position as % of map size
+// lx, ly → label offset in px from the dot center
+//           lx: positive = right, negative = left
+//           ly: positive = down,  negative = up
+// ─────────────────────────────────────────────────────────────────────────────
+const DOT_POSITIONS_MOBILE = {
+  paris:    { x: 47, y: 25, lx:  12, ly: 0  },
+  toulouse: { x: 43, y: 72, lx:  12, ly: 0  },
+  hanoi:    { x: 49, y: 16, lx:  -20, ly: -17  },
+  daklak:   { x: 65, y: 71, lx: -45, ly: -20  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,8 +66,8 @@ const LINE_STYLE = {
 const MAP_FILTER_DEFAULT = "invert(1) brightness(0.75)"
 const MAP_FILTER_HOVER   = "invert(1) sepia(0.8) saturate(4) hue-rotate(320deg) brightness(0.85)"
 
-// Fixed map container height — both countries use the same value
-const MAP_HEIGHT = 500  // px — change this one number to resize both maps
+const MAP_HEIGHT_DESKTOP = 500  // px desktop
+const MAP_HEIGHT_MOBILE  = 320  // px mobile — shorter since it's full width
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const francePartners = [
@@ -132,18 +157,16 @@ function SwitchButton({ label, onClick, direction }) {
 }
 
 // ─── MAP WITH DOTS ────────────────────────────────────────────────────────────
-function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
+function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
   const containerRef = useRef(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
   const [hovered, setHovered] = useState(false)
+  const mapHeight = isMobile ? MAP_HEIGHT_MOBILE : MAP_HEIGHT_DESKTOP
 
   useEffect(() => {
     const measure = () => {
       if (!containerRef.current) return
-      setSize({
-        w: containerRef.current.offsetWidth,
-        h: containerRef.current.offsetHeight,
-      })
+      setSize({ w: containerRef.current.offsetWidth, h: containerRef.current.offsetHeight })
     }
     measure()
     const ro = new ResizeObserver(measure)
@@ -151,7 +174,6 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
     return () => ro.disconnect()
   }, [src])
 
-  // expose container to parent via mapRef
   useEffect(() => {
     if (mapRef) mapRef.current = containerRef.current
   })
@@ -159,40 +181,33 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
   return (
     <div
       ref={containerRef}
-      style={{
-        position: "relative",
-        width: "100%",
-        height: `${MAP_HEIGHT}px`,  // FIX 2/3: fixed height, same for both maps
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      style={{ position: "relative", width: "100%", height: `${mapHeight}px` }}
+      onMouseEnter={() => !isMobile && setHovered(true)}
+      onMouseLeave={() => !isMobile && setHovered(false)}
     >
-      {/* Map image
-          - objectFit contain keeps aspect ratio within the fixed height box
-          - mixBlendMode screen: on near-black bg (#020100), any dark fill becomes
-            transparent — only bright borders remain visible                      */}
       <img
         src={src}
         alt=""
         style={{
-          position: "absolute",
-          top: 0, left: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          objectPosition: "center",
+          position: "absolute", top: 0, left: 0,
+          width: "100%", height: "100%",
+          objectFit: "contain", objectPosition: "center",
           display: "block",
           filter: hovered ? MAP_FILTER_HOVER : MAP_FILTER_DEFAULT,
           transition: "filter 0.35s ease",
         }}
       />
 
-      {/* FIX 4: Dots — fully centered using a zero-size anchor point */}
+      {/* Dots */}
       {size.w > 0 && partners.map(p => {
-        const pos  = DOT_POSITIONS[p.id]
-        const x    = (pos.x / 100) * size.w
-        const y    = (pos.y / 100) * size.h
+        const positions = isMobile ? DOT_POSITIONS_MOBILE : DOT_POSITIONS
+        const pos   = positions[p.id]
+        const x     = (pos.x / 100) * size.w
+        const y     = (pos.y / 100) * size.h
         const isSel = selected?.id === p.id
+        // larger tap area on mobile
+        const hitSize = isMobile ? "44px" : "0px"
+
         return (
           <div
             key={p.id}
@@ -200,12 +215,22 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
             style={{
               position: "absolute",
               left: x, top: y,
-              width: 0, height: 0,   // zero-size anchor — everything is centered on this exact point
+              width: 0, height: 0,
               cursor: "pointer",
               zIndex: 10,
             }}
           >
-            {/* Pulse ring — centered on anchor */}
+            {/* Invisible large tap area for mobile */}
+            {isMobile && (
+              <div style={{
+                position: "absolute",
+                width: hitSize, height: hitSize,
+                top: 0, left: 0,
+                transform: "translate(-50%, -50%)",
+              }} />
+            )}
+
+            {/* Pulse ring */}
             {isSel && (
               <div style={{
                 position: "absolute",
@@ -218,10 +243,12 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
                 pointerEvents: "none",
               }} />
             )}
-            {/* Outer ring — centered on anchor */}
+
+            {/* Outer ring */}
             <div style={{
               position: "absolute",
-              width: "14px", height: "14px",
+              width: isMobile ? "18px" : "14px",
+              height: isMobile ? "18px" : "14px",
               borderRadius: "50%",
               top: 0, left: 0,
               transform: "translate(-50%, -50%)",
@@ -229,24 +256,27 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
               background: isSel ? "rgba(138,43,11,0.3)" : "transparent",
               transition: "all 0.3s ease",
             }}>
-              {/* Inner dot — absolutely centered inside outer ring */}
+              {/* Inner dot */}
               <div style={{
                 position: "absolute",
                 top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: "5px", height: "5px",
+                width: isMobile ? "7px" : "5px",
+                height: isMobile ? "7px" : "5px",
                 borderRadius: "50%",
                 background: isSel ? "#c2440f" : "rgba(245,240,232,0.7)",
                 transition: "background 0.3s ease",
               }} />
             </div>
-            {/* City label — absolutely positioned, never affects dot centering */}
+
+            {/* City label — position controlled by lx/ly in config */}
             <p style={{
               position: "absolute",
-              left: "12px", top: "0px",
+              left: `${pos.lx}px`,
+              top: `${pos.ly}px`,
               transform: "translateY(-50%)",
               fontFamily: "Courier New, monospace",
-              fontSize: "9px",
+              fontSize: isMobile ? "10px" : "9px",
               color: isSel ? "rgba(245,240,232,0.85)" : "rgba(245,240,232,0.4)",
               textTransform: "uppercase",
               letterSpacing: "0.15em",
@@ -264,8 +294,7 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef }) {
   )
 }
 
-// ─── CONNECTING LINE ──────────────────────────────────────────────────────────
-// FIX 1: uses a small delay to let PartnerInfo mount before measuring cardRef
+// ─── CONNECTING LINE — desktop only ──────────────────────────────────────────
 function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
   const [coords, setCoords] = useState(null)
 
@@ -279,16 +308,13 @@ function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
     const dotX = map.left + (pos.x / 100) * map.width  - root.left
     const dotY = map.top  + (pos.y / 100) * map.height - root.top
 
-    const cardEdgeX = isFrance
-      ? card.left  - root.left
-      : card.right - root.left
+    const cardEdgeX = isFrance ? card.left - root.left : card.right - root.left
     const cardEdgeY = card.top - root.top + card.height * 0.2
 
     setCoords({ x1: dotX, y1: dotY, x2: cardEdgeX, y2: cardEdgeY, w: root.width, h: root.height })
   }, [dotId, isFrance, mapRef, cardRef, rootRef])
 
   useEffect(() => {
-    // Small delay so PartnerInfo has time to mount and cardRef is populated
     const t = setTimeout(measure, 50)
     window.addEventListener("resize", measure)
     return () => { clearTimeout(t); window.removeEventListener("resize", measure) }
@@ -371,14 +397,17 @@ function EmptyInfo() {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function Partners() {
+  const isMobile = useIsMobile()
+
   const [country,    setCountry]    = useState("france")
   const [visible,    setVisible]    = useState(true)
   const [selectedFR, setSelectedFR] = useState(null)
   const [selectedVN, setSelectedVN] = useState(null)
 
-  const mapRef  = useRef(null)
-  const cardRef = useRef(null)
-  const rootRef = useRef(null)
+  const mapRef    = useRef(null)
+  const cardRef   = useRef(null)
+  const rootRef   = useRef(null)
+  const infoRef   = useRef(null)  // mobile: ref to info block for auto-scroll
 
   const isFrance    = country === "france"
   const partners    = isFrance ? francePartners : vietnamPartners
@@ -386,14 +415,26 @@ export default function Partners() {
   const setSelected = isFrance ? setSelectedFR  : setSelectedVN
   const mapSrc      = isFrance ? franceSrc      : vietnamSrc
 
-  // Reset everything on switch — clears line, card, selection
   const switchTo = (c) => {
     setVisible(false)
     setSelectedFR(null)
     setSelectedVN(null)
     cardRef.current = null
-    window.scrollTo(0, 0)  // FIX 1: always start at top of page
+    window.scrollTo(0, 0)
     setTimeout(() => { setCountry(c); setVisible(true) }, 280)
+  }
+
+  // Mobile: auto-scroll to info when a partner is selected
+  const handleSelect = (p) => {
+    setSelected(prev => {
+      const next = prev?.id === p.id ? null : p
+      if (next && isMobile) {
+        setTimeout(() => {
+          infoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+        }, 100)
+      }
+      return next
+    })
   }
 
   return (
@@ -416,7 +457,7 @@ export default function Partners() {
       <Scrollbar />
 
       <div style={{
-        paddingTop: "7rem",
+        paddingTop: isMobile ? "5rem" : "7rem",
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
@@ -431,13 +472,14 @@ export default function Partners() {
           />
         )}
 
-        {/* Main content */}
+        {/* ── MAIN CONTENT ── */}
         <div
           ref={rootRef}
           style={{
             flex: 1, position: "relative",
             maxWidth: "1200px", width: "100%",
-            margin: "0 auto", padding: "2rem 3rem",
+            margin: "0 auto",
+            padding: isMobile ? "1.5rem 1.5rem" : "2rem 3rem",
             opacity: visible ? 1 : 0,
             transition: "opacity 0.28s ease",
           }}
@@ -447,52 +489,83 @@ export default function Partners() {
           {/* Country name */}
           <h2 style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(3rem, 6vw, 5.5rem)",
+            fontSize: isMobile ? "clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
             color: "#f5f0e8", fontWeight: 800,
-            lineHeight: 1, marginBottom: "2.5rem",
-            textAlign: isFrance ? "left" : "right",
+            lineHeight: 1,
+            marginBottom: isMobile ? "1.5rem" : "2.5rem",
+            // on mobile Vietnam, push title down below the sticky "back to France" button
+            marginTop: (isMobile && !isFrance) ? "5rem" : 0,
+            textAlign: isMobile ? "left" : (isFrance ? "left" : "right"),
             position: "relative", zIndex: 1,
           }}>
             {isFrance ? "France" : "Vietnam"}
           </h2>
 
-          {/* Map + info */}
-          <div style={{
-            display: "flex", gap: "4rem",
-            alignItems: "flex-start",
-            flexDirection: isFrance ? "row" : "row-reverse",
-            position: "relative", zIndex: 1,
-          }}>
-            <div style={{ flex: "0 0 42%", maxWidth: "42%" }}>
+          {isMobile ? (
+            /* ── MOBILE LAYOUT: map full width, info below ── */
+            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+
+              {/* Map — full width */}
               <MapWithDots
                 src={mapSrc}
                 partners={partners}
                 selected={selected}
-                onSelect={(p) => setSelected(prev => prev?.id === p.id ? null : p)}
+                onSelect={handleSelect}
                 mapRef={mapRef}
+                isMobile={true}
               />
-            </div>
-            <div style={{
-              flex: 1, display: "flex",
-              flexDirection: "column", justifyContent: "center",
-              minHeight: "260px",
-            }}>
-              {selected
-                ? <PartnerInfo partner={selected} cardRef={cardRef} />
-                : <EmptyInfo />
-              }
-            </div>
-          </div>
 
-          {/* Connecting line */}
-          {selected && (
-            <ConnectingLine
-              mapRef={mapRef}
-              cardRef={cardRef}
-              dotId={selected.id}
-              rootRef={rootRef}
-              isFrance={isFrance}
-            />
+              {/* Info — below map, auto-scrolled to on tap */}
+              <div ref={infoRef} style={{ paddingTop: "0.5rem" }}>
+                {selected
+                  ? <PartnerInfo partner={selected} cardRef={cardRef} />
+                  : <EmptyInfo />
+                }
+              </div>
+
+            </div>
+          ) : (
+            /* ── DESKTOP LAYOUT: side by side ── */
+            <>
+              <div style={{
+                display: "flex", gap: "4rem",
+                alignItems: "flex-start",
+                flexDirection: isFrance ? "row" : "row-reverse",
+                position: "relative", zIndex: 1,
+              }}>
+                <div style={{ flex: "0 0 42%", maxWidth: "42%" }}>
+                  <MapWithDots
+                    src={mapSrc}
+                    partners={partners}
+                    selected={selected}
+                    onSelect={(p) => setSelected(prev => prev?.id === p.id ? null : p)}
+                    mapRef={mapRef}
+                    isMobile={false}
+                  />
+                </div>
+                <div style={{
+                  flex: 1, display: "flex",
+                  flexDirection: "column", justifyContent: "center",
+                  minHeight: "260px",
+                }}>
+                  {selected
+                    ? <PartnerInfo partner={selected} cardRef={cardRef} />
+                    : <EmptyInfo />
+                  }
+                </div>
+              </div>
+
+              {/* Connecting line — desktop only */}
+              {selected && (
+                <ConnectingLine
+                  mapRef={mapRef}
+                  cardRef={cardRef}
+                  dotId={selected.id}
+                  rootRef={rootRef}
+                  isFrance={isFrance}
+                />
+              )}
+            </>
           )}
         </div>
 

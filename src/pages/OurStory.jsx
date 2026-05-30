@@ -1,8 +1,19 @@
-﻿import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
 import Footer from "../components/Footer"
+
+// ─── MOBILE DETECTION HOOK ───────────────────────────────────────────────────
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  useEffect(() => {
+    const handle = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", handle)
+    return () => window.removeEventListener("resize", handle)
+  }, [])
+  return isMobile
+}
 
 // ─── ORB ─────────────────────────────────────────────────────────────────────
 function Orb({ top, left, size = "70vw", opacity = 0.25 }) {
@@ -88,12 +99,13 @@ function BodyText({ children }) {
 
 // ─── DIVIDER ─────────────────────────────────────────────────────────────────
 function Divider() {
+  const isMobile = useIsMobile()
   return (
     <FadeIn>
       <div style={{
         width: "48px", height: "1px",
         background: "rgba(138,43,11,0.5)",
-        margin: "3rem 0",
+        margin: isMobile ? "1.5rem 0" : "3rem 0",
       }} />
     </FadeIn>
   )
@@ -107,6 +119,7 @@ const stats = [
 ]
 
 function StatsBar() {
+  const isMobile = useIsMobile()
   return (
     <FadeIn delay={0.1}>
       <div style={{
@@ -114,13 +127,14 @@ function StatsBar() {
         flexWrap: "wrap",
         borderTop: "1px solid rgba(70,30,5,0.3)",
         borderBottom: "1px solid rgba(70,30,5,0.3)",
-        marginBottom: "6rem",
+        marginBottom: isMobile ? "3rem" : "6rem",
       }}>
         {stats.map((s, i) => (
           <div key={i} style={{
-            flex: "1 1 200px",
-            padding: "2.5rem 2rem",
-            borderRight: i < stats.length - 1 ? "1px solid rgba(70,30,5,0.3)" : "none",
+            flex: isMobile ? "1 1 100%" : "1 1 200px",
+            padding: isMobile ? "1.5rem 1rem" : "2.5rem 2rem",
+            borderRight: (!isMobile && i < stats.length - 1) ? "1px solid rgba(70,30,5,0.3)" : "none",
+            borderBottom: (isMobile && i < stats.length - 1) ? "1px solid rgba(70,30,5,0.15)" : "none",
             textAlign: "center",
           }}>
             <p style={{
@@ -152,13 +166,14 @@ function StatsBar() {
 
 // ─── TEXT SECTION ─────────────────────────────────────────────────────────────
 function TextSection({ label, heading, paragraphs, align = "left" }) {
-  const isRight = align === "right"
+  const isMobile = useIsMobile()
+  const isRight = align === "right" && !isMobile
   return (
     <FadeIn>
       <div style={{
         display: "flex",
         justifyContent: isRight ? "flex-end" : "flex-start",
-        marginBottom: "6rem",
+        marginBottom: isMobile ? "3rem" : "6rem",
       }}>
         <div style={{ maxWidth: "620px", width: "100%" }}>
           <SectionLabel>{label}</SectionLabel>
@@ -218,6 +233,7 @@ function PullQuote({ text }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function OurStory() {
+  const isMobile = useIsMobile()
   return (
     <div style={{
       background: "#020100",
@@ -232,7 +248,7 @@ export default function OurStory() {
       <Scrollbar />
 
       {/* ── HERO HEADER ── */}
-      <section className="relative pt-48 pb-24 px-6 overflow-hidden">
+      <section className={`relative ${isMobile ? "pt-28 pb-12" : "pt-48 pb-24"} px-6 overflow-hidden`}>
         <Orb top="10%" left="80%" size="60vw" opacity={0.25} />
         <Orb top="90%" left="10%" size="40vw" opacity={0.12} />
         <div className="relative z-10 max-w-5xl mx-auto">
@@ -245,7 +261,7 @@ export default function OurStory() {
               fontWeight: 800,
               lineHeight: 1,
               marginBottom: "2rem",
-              whiteSpace: "nowrap",
+              whiteSpace: isMobile ? "normal" : "nowrap",
             }}>
               Un pont entre deux mondes
             </h1>

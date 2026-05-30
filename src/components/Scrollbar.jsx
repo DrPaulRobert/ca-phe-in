@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState, useRef, useCallback } from "react"
 
-export default function Scrollbar() {
+// Desktop-only scrollbar — hidden on mobile
+function ScrollbarDesktop() {
   const [thumbTop, setThumbTop] = useState(0)
   const [thumbHeight, setThumbHeight] = useState(40)
   const isDragging = useRef(false)
@@ -133,4 +134,18 @@ export default function Scrollbar() {
 
     </div>
   )
+}
+
+// ─── EXPORTED COMPONENT — renders nothing on mobile ──────────────────────────
+export default function Scrollbar() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  if (isMobile) return null
+  return <ScrollbarDesktop />
 }

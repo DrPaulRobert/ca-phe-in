@@ -5,7 +5,6 @@ import coffee2 from "../assets/coffee2.png"
 import coffee3 from "../assets/coffee3.png"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
-import Footer from "../components/Footer"
 
 
 // orb background blob
@@ -104,51 +103,92 @@ export default function Home() {
                 >
                 </h1>
         </div>
-        {/* ── HERO POEM ── */}
+      {/* ── HERO POEM ── */}
 <div
-  className="absolute z-10 flex justify-between w-full"
+  className="absolute z-10 w-full"
   style={{
-    bottom: "40%",         // ← vertical position from bottom of hero (increase = higher)
-    paddingLeft: "23vw",   // ← distance from left edge
-    paddingRight: "19vw",  // ← distance from right edge
-    gap: "4vw",            // ← minimum space between the two columns, scales with screen
-    alignItems: "flex-start",
+    bottom: "40%",
+    display: "flex",
+    flexDirection: "column",  // stacked by default (mobile first)
+    alignItems: "center",
+    gap: "2rem",
+    paddingLeft: "1rem",
+    paddingRight: "1rem",
   }}
 >
-  {/* Vietnamese — left */} 
-  <div style={{ fontFamily: "Courier New, monospace", fontStyle: "italic", animation: "fadeIn 1.5s ease forwards", animationDelay: "0.3s", opacity: 0,  }}> 
-    {[
-      "Đất nâu ôm giọt mưa rơi,",                                                   // duration                 // delay before it starts // start invisible
-      "Người đi gieo hạt giữa trời mênh mông,",
-      "Hương cà phê thức trong lòng,",
-      "Sớm mai tỉnh giấc, ấm nồng nhân gian.",
-    ].map((line, i) => (
-      <p key={i} style={{
-        color: "#f5f0e8",
-        fontSize: "clamp(0.75rem, 1vw, 1.5rem)", // ← text size
-        lineHeight: "2",                          // ← space between lines
-        margin: 0,
-        whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
-      }}>{line}</p>
-    ))}
-  </div>  
+  <style>{`
+    @media (min-width: 768px) {
+      .poem-wrapper {
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        padding-left: 23vw !important;
+        padding-right: 19vw !important;
+        gap: 4vw !important;
+      }
+      .poem-block {
+        text-align: left !important;
+      }
+    }
+  `}</style>
 
-  {/* French — right */}
-  <div style={{ fontFamily: "Courier New, monospace", fontStyle: "italic", textAlign: "left", animation: "fadeIn 1.5s ease forwards", animationDelay: "0.3s", opacity: 0,  }}>
-    {[
-      "La terre brune accueille la pluie qui tombe,",
-      "L'homme sème au cœur du ciel immense,",
-      "Le parfum du café s'éveille en lui,",
-      "Et l'aube réchauffe doucement le monde.",
-    ].map((line, i) => (
-      <p key={i} style={{
-        color: "#f5f0e8",
-        fontSize: "clamp(0.75rem, 1vw, 2rem)", // ← text size
-        lineHeight: "2",                          // ← space between lines
-        margin: 0,
-        whiteSpace: "nowrap",   // ← each line stays on one line, never wraps
-      }}>{line}</p>
-    ))}
+  <div className="poem-wrapper" style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "2rem",
+    width: "100%",
+  }}>
+
+    {/* Vietnamese — left on desktop, top on mobile */}
+    <div className="poem-block" style={{
+      fontFamily: "Courier New, monospace",
+      fontStyle: "italic",
+      textAlign: "center",
+      animation: "fadeIn 1.5s ease forwards",
+      animationDelay: "0.3s",
+      opacity: 0,
+    }}>
+      {[
+        "Đất nâu ôm giọt mưa rơi,",
+        "Người đi gieo hạt giữa trời mênh mông,",
+        "Hương cà phê thức trong lòng,",
+        "Sớm mai tỉnh giấc, ấm nồng nhân gian.",
+      ].map((line, i) => (
+        <p key={i} style={{
+          color: "#f5f0e8",
+          fontSize: "clamp(0.75rem, 1vw, 1.5rem)",
+          lineHeight: "2",
+          margin: 0,
+          whiteSpace: "nowrap",
+        }}>{line}</p>
+      ))}
+    </div>
+
+    {/* French — right on desktop, bottom on mobile */}
+    <div className="poem-block" style={{
+      fontFamily: "Courier New, monospace",
+      fontStyle: "italic",
+      textAlign: "center",
+      animation: "fadeIn 1.5s ease forwards",
+      animationDelay: "0.3s",
+      opacity: 0,
+    }}>
+      {[
+        "La terre brune accueille la pluie qui tombe,",
+        "L'homme sème au cœur du ciel immense,",
+        "Le parfum du café s'éveille en lui,",
+        "Et l'aube réchauffe doucement le monde.",
+      ].map((line, i) => (
+        <p key={i} style={{
+          color: "#f5f0e8",
+          fontSize: "clamp(0.75rem, 1vw, 2rem)",
+          lineHeight: "2",
+          margin: 0,
+          whiteSpace: "nowrap",
+        }}>{line}</p>
+      ))}
+    </div>
+
   </div>
 </div>
       </section>
@@ -286,7 +326,26 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-        <Footer />
+      <footer className="relative py-16 px-6 overflow-hidden">
+        <Orb top="70%" left="99%" size={600} opacity={0.15} />
+        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8">
+          <span
+            className="font-bold"
+            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2rem", color: "#f5f0e8" }}
+          >
+            caphein
+          </span>
+          <div className="flex gap-10 font-mono text-stone-600 text-xs uppercase tracking-widest">
+            <Link to="/our-story" className="hover:text-amber-700 transition-colors">Histoire</Link>
+            <Link to="/culture" className="hover:text-amber-700 transition-colors">Culture</Link>
+            <Link to="/products" className="hover:text-amber-700 transition-colors">Produits</Link>
+            <Link to="/contact" className="hover:text-amber-700 transition-colors">Contact</Link>
+          </div>
+          <p className="font-mono text-stone-700 text-xs">
+            © 2025 Caphein. All rights reserved.
+          </p>
+        </div>
+      </footer>
 
     </div>
   )
