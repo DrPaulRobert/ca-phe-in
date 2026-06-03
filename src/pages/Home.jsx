@@ -5,7 +5,7 @@ import coffee2 from "../assets/coffee2.png"
 import coffee3 from "../assets/coffee3.png"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
-
+import Footer from "../components/Footer"
 
 // orb background blob
 function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
@@ -16,7 +16,7 @@ function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
         width: size,
         height: size,
         top, left, right, bottom,
-        background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
+        background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
         opacity,
         transform: "translate(-50%, -50%)",
       }}
@@ -78,13 +78,13 @@ export default function Home() {
   }, [])
 
   return (
-    <div style={{ background: "#020100", color: "#f5f0e8", position: "relative", overflow: "hidden", width: "100%" }}>
+    <div style={{ background: "var(--color-bg)", color: "--color-cream", position: "relative", overflow: "hidden", width: "100%" }}>
 
       <Grain opacity={0.15} />
       <Scrollbar />
 
       {/* ── HERO ── */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">  {/* h-screen : full viewport height*/}
         <Orb top="5%" left="70%" size="80vw" opacity={0.5} />
         <Orb top="60%" left="23%" size="60vw" opacity={0.2} />
         <Orb top="99%" left="99%" size="55vw" opacity={0.4} />
@@ -95,7 +95,7 @@ export default function Home() {
           <h1 style={{
                 fontFamily: "'Bodoni Moda', serif",
                 fontSize: "clamp(5rem, 15vw, 14rem)",
-                color: "#f5f0e8",
+                color: "--color-cream",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
                 fontWeight: 800,
@@ -155,7 +155,7 @@ export default function Home() {
         "Sớm mai tỉnh giấc, ấm nồng nhân gian.",
       ].map((line, i) => (
         <p key={i} style={{
-          color: "#f5f0e8",
+          color: "var(--color-cream)",
           fontSize: "clamp(0.75rem, 1vw, 1.5rem)",
           lineHeight: "2",
           margin: 0,
@@ -180,7 +180,7 @@ export default function Home() {
         "Et l'aube réchauffe doucement le monde.",
       ].map((line, i) => (
         <p key={i} style={{
-          color: "#f5f0e8",
+          color: "var(--color-cream)",
           fontSize: "clamp(0.75rem, 1vw, 2rem)",
           lineHeight: "2",
           margin: 0,
@@ -194,7 +194,7 @@ export default function Home() {
       </section>
 
       {/* ── MISSION ── */}
-      <section className="relative py-40 px-6 flex items-center justify-center overflow-hidden">
+      <section className="relative py-50 px-6 flex items-center justify-center overflow-hidden">   {/* py-48 → Vertical spacing */}
         <Orb top="50%" left="50%" size={800} opacity={0.15} />
         <div className="relative z-10 text-center max-w-2xl mx-auto">
           <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs mb-8">
@@ -205,7 +205,7 @@ export default function Home() {
             style={{
               fontFamily: "'Bodoni Moda', serif",
               fontSize: "clamp(2rem, 4vw, 3.5rem)",
-              color: "#f5f0e8",
+              color: "var(--color-cream)",
             }}
           >
             Bringing the finest Vietnamese coffee to your table
@@ -219,7 +219,7 @@ export default function Home() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="relative py-32 px-6 overflow-hidden">
+      <section className="relative py-88 px-6 overflow-hidden">    {/* py-48 → Vertical spacing */}
         <Orb top="50%" left="20%" size={900} opacity={0.12} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs text-center mb-16">
@@ -231,7 +231,7 @@ export default function Home() {
                 <div className="text-3xl mb-6">{f.icon}</div>
                 <h3
                   className="font-bold mb-4"
-                  style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.2rem", color: "#f5f0e8" }}
+                  style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.2rem", color: "var(--color-cream)" }}
                 >
                   {f.title}
                 </h3>
@@ -243,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* ── PRODUCTS ── */}
-      <section className="relative py-32 px-6 overflow-hidden">
+      <section className="relative py-72 px-6 overflow-hidden">    {/* py-48 → Vertical spacing */}
         <Orb top="30%" left="80%" size={600} opacity={0.2} />
         <Orb top="80%" left="10%" size={500} opacity={0.15} />
         <div className="relative z-10 max-w-5xl mx-auto">
@@ -253,7 +253,7 @@ export default function Home() {
             </p>
             <h2
               className="font-bold"
-              style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3rem)", color: "#f5f0e8" }}
+              style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--color-cream)" }}
             >
               Three coffees, one origin
             </h2>
@@ -277,7 +277,7 @@ export default function Home() {
                   <p className="font-mono text-amber-800 text-xs uppercase tracking-widest mb-2">{p.origin}</p>
                   <h3
                     className="font-bold mb-2"
-                    style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.3rem", color: "#f5f0e8" }}
+                    style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.3rem", color: "var(--color-cream)" }}
                   >
                     {p.name}
                   </h3>
@@ -299,7 +299,7 @@ export default function Home() {
       </section>
 
       {/* ── OUR STORY TEASER ── */}
-      <section className="relative py-40 px-6 overflow-hidden">
+      <section className="relative py-72 px-6 overflow-hidden">    {/* py-48 → Vertical spacing */}
         <Orb top="50%" left="50%" size={700} opacity={0.2} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="font-mono text-stone-500 uppercase tracking-[0.4em] text-xs mb-8">
@@ -307,7 +307,7 @@ export default function Home() {
           </p>
           <h2
             className="font-bold leading-tight mb-10"
-            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "#f5f0e8" }}
+            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "var(--color-cream)" }}
           >
             Born in the highlands of Vietnam
           </h2>
@@ -326,27 +326,7 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="relative py-16 px-6 overflow-hidden">
-        <Orb top="70%" left="99%" size={600} opacity={0.15} />
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8">
-          <span
-            className="font-bold"
-            style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2rem", color: "#f5f0e8" }}
-          >
-            caphein
-          </span>
-          <div className="flex gap-10 font-mono text-stone-600 text-xs uppercase tracking-widest">
-            <Link to="/our-story" className="hover:text-amber-700 transition-colors">Histoire</Link>
-            <Link to="/culture" className="hover:text-amber-700 transition-colors">Culture</Link>
-            <Link to="/products" className="hover:text-amber-700 transition-colors">Produits</Link>
-            <Link to="/contact" className="hover:text-amber-700 transition-colors">Contact</Link>
-          </div>
-          <p className="font-mono text-stone-700 text-xs">
-            © 2025 Caphein. All rights reserved.
-          </p>
-        </div>
-      </footer>
-
+      <Footer />
     </div>
   )
 }

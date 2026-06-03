@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+﻿import { Link } from "react-router-dom"
 
 // Reusable Orb (same as in Home / Products)
 function Orb({ top, left, size = "600px", opacity = 0.15 }) {
@@ -17,10 +17,13 @@ function Orb({ top, left, size = "600px", opacity = 0.15 }) {
 }
 
 const footerLinks = [
-  { label: "Histoire",  to: "/our-story" },
-  { label: "Culture",   to: "/culture"   },
-  { label: "Produits",  to: "/products"  },
-  { label: "Contact",   to: "/contact"   },
+  { label: "Histoire",    to: "/our-story"   },
+  { label: "Culture",     to: "/culture"     },
+  { label: "Partenaires", to: "/partenaires" },
+  { label: "Produits",    to: "/products"    },
+  { label: "Contact",     to: "/contact"     },
+  { label: "Mon café",    to: "/mon-cafe"    },
+  { label: "Panier",      to: "/panier"      },
 ]
 
 export default function Footer() {
@@ -32,7 +35,7 @@ export default function Footer() {
         <Link to="/" style={{ textDecoration: "none" }}>
           <span style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: "2rem", color: "#f5f0e8", fontWeight: 700,
+            fontSize: "2rem", color: "var(--color-cream)", fontWeight: 700,
           }}>
             caphein
           </span>
@@ -50,7 +53,7 @@ export default function Footer() {
                 textTransform: "uppercase", letterSpacing: "0.25em",
                 textDecoration: "none", transition: "color 0.3s ease",
               }}
-              onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--color-amber)"}
               onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.35)"}
             >
               {l.label}

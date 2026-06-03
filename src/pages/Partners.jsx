@@ -21,7 +21,7 @@ function Orb({ top, left, size = "60vw", opacity = 0.2 }) {
   return (
     <div className="absolute rounded-full pointer-events-none" style={{
       width: size, height: size, top, left,
-      background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
+      background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
       opacity, transform: "translate(-50%, -50%)",
     }} />
   )
@@ -58,7 +58,7 @@ const DOT_POSITIONS_MOBILE = {
 // dashArray: "0" = solid │ "4 5" = dashed │ "2 4" = dotted
 // ─────────────────────────────────────────────────────────────────────────────
 const LINE_STYLE = {
-  color:     "rgba(194,68,15,0.6)",
+  color:     "rgba(var(--color-amber-rgb), 0.6)",
   width:     1,
   dashArray: "4 5",
 }
@@ -121,7 +121,7 @@ function SwitchButton({ label, onClick, direction }) {
         zIndex: 40,
         background: "rgba(2,1,0,0.85)",
         backdropFilter: "blur(10px)",
-        border: `1px solid ${hov ? "rgba(194,68,15,0.6)" : "rgba(138,43,11,0.25)"}`,
+        border: `1px solid ${hov ? "rgba(var(--color-amber-rgb), 0.6)" : "rgba(138,43,11,0.25)"}`,
         borderRadius: "2rem",
         transition: "border-color 0.3s ease",
         alignSelf: "center",
@@ -132,7 +132,7 @@ function SwitchButton({ label, onClick, direction }) {
       <p style={{
         fontFamily: "Courier New, monospace",
         fontSize: "11px",
-        color: hov ? "#c2440f" : "rgba(245,240,232,0.45)",
+        color: hov ? "var(--color-amber)" : "rgba(245,240,232,0.45)",
         textTransform: "uppercase",
         letterSpacing: "0.3em",
         transition: "color 0.3s ease",
@@ -144,11 +144,11 @@ function SwitchButton({ label, onClick, direction }) {
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         {direction === "up" ? (
           <path d="M6 10L6 2M6 2L2 6M6 2L10 6"
-            stroke={hov ? "#c2440f" : "rgba(245,240,232,0.4)"}
+            stroke={hov ? "var(--color-amber)" : "rgba(245,240,232,0.4)"}
             strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
         ) : (
           <path d="M6 2L6 10M6 10L2 6M6 10L10 6"
-            stroke={hov ? "#c2440f" : "rgba(245,240,232,0.4)"}
+            stroke={hov ? "var(--color-amber)" : "rgba(245,240,232,0.4)"}
             strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
         )}
       </svg>
@@ -252,8 +252,8 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
               borderRadius: "50%",
               top: 0, left: 0,
               transform: "translate(-50%, -50%)",
-              border: `1px solid ${isSel ? "rgba(194,68,15,0.9)" : "rgba(245,240,232,0.5)"}`,
-              background: isSel ? "rgba(138,43,11,0.3)" : "transparent",
+              border: `1px solid ${isSel ? "rgba(194,68,15,0.9)" : "rgba(var(--color-cream-rgb), 0.5)"}`,
+              background: isSel ? "rgba(var(--color-rust-rgb), 0.3)" : "transparent",
               transition: "all 0.3s ease",
             }}>
               {/* Inner dot */}
@@ -264,7 +264,7 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
                 width: isMobile ? "7px" : "5px",
                 height: isMobile ? "7px" : "5px",
                 borderRadius: "50%",
-                background: isSel ? "#c2440f" : "rgba(245,240,232,0.7)",
+                background: isSel ? "var(--color-amber)" : "rgba(245,240,232,0.7)",
                 transition: "background 0.3s ease",
               }} />
             </div>
@@ -366,12 +366,12 @@ function PartnerInfo({ partner, cardRef }) {
       <h3 style={{
         fontFamily: "'Bodoni Moda', serif",
         fontSize: "clamp(1.3rem, 2vw, 1.8rem)",
-        color: "#f5f0e8", fontWeight: 800,
+        color: "var(--color-cream)", fontWeight: 800,
         marginBottom: "1rem", lineHeight: 1.1,
       }}>{partner.name}</h3>
       <p style={{
         fontFamily: "Courier New, monospace", fontSize: "14px",
-        color: "rgba(245,240,232,0.5)", lineHeight: 1.85,
+        color: "rgba(var(--color-cream-rgb), 0.5)", lineHeight: 1.85,
       }}>{partner.description}</p>
     </div>
   )
@@ -439,7 +439,7 @@ export default function Partners() {
 
   return (
     <div style={{
-      background: "#020100", color: "#f5f0e8",
+      background: "var(--color-bg)", color: "var(--color-cream)",
       position: "relative", width: "100%", minHeight: "100vh",
     }}>
       <style>{`
@@ -489,13 +489,15 @@ export default function Partners() {
           {/* Country name */}
           <h2 style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: isMobile ? "clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
-            color: "#f5f0e8", fontWeight: 800,
-            lineHeight: 1,
+            fontSize: isMobile ? "clamp(1.5rem, 6vw, 2rem)" : "clamp(1.8rem, 3vw, 2.8rem)",//"clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
+            color: "var(--color-cream)", fontWeight: 800,
+            lineHeight: 2,
             marginBottom: isMobile ? "1.5rem" : "2.5rem",
             // on mobile Vietnam, push title down below the sticky "back to France" button
             marginTop: (isMobile && !isFrance) ? "5rem" : 0,
-            textAlign: isMobile ? "left" : (isFrance ? "left" : "right"),
+            textAlign: isMobile ? "left" : (isFrance ? "left" : "right"), // "center",
+            paddingLeft: isFrance ? "14%" : "0%",
+            paddingRight: isFrance ? "0%" : "16%",
             position: "relative", zIndex: 1,
           }}>
             {isFrance ? "France" : "Vietnam"}

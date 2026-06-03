@@ -1,0 +1,13 @@
+﻿:root {
+  /* ── MAIN COLORS ─────────────────────────────────────── */
+  --color-cream:      #e8e0d5 ;   /* main text, titles, scrollbar    */   /* Avant: f5f0e8 */ /* Apres: f5f1ec*/ /*e8e0d5 */
+  --color-bg:         #020100;   /* page background everywhere      */
+  --color-rust:       #8a2b0b;   /* orbs, borders, section labels   */
+  --color-amber:      #c2440f;   /* hover states, active dots/links */
+  --color-amber-soft: #f59e0b;   /* FR/EN switcher active state     */
+
+  /* ── RGB VERSIONS (for rgba() with opacity) ──────────── */
+  --color-cream-rgb:  245, 240, 232;
+  --color-rust-rgb:   138, 43,  11;
+  --color-amber-rgb:  194, 68,  15;
+}

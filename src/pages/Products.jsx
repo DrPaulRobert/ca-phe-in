@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
+import Footer from "../components/Footer"
 
 // ─── ORB ─────────────────────────────────────────────────────────────────────
 function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
@@ -11,7 +12,7 @@ function Orb({ top, left, right, bottom, size = "70vw", opacity = 0.25 }) {
       style={{
         width: size, height: size,
         top, left, right, bottom,
-        background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
+        background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
         opacity,
         transform: "translate(-50%, -50%)",
       }}
@@ -62,21 +63,21 @@ const packs = [
     name: "Essentiel",
     label: "Le café, pur.",
     includes: ["Café sélectionné", "Emballage hermétique", "Fiche d'origine"],
-    icon: "◈",
+    icon: "", // "◈"
   },
   {
     id: "tradition",
     name: "Tradition",
     label: "L'expérience Phin.",
     includes: ["Tout Essentiel", "Filtre Phin vietnamien", "Guide de préparation"],
-    icon: "◉",
+    icon: "", // "◉"
   },
   {
     id: "rituel",
     name: "Rituel",
     label: "Le rituel complet.",
     includes: ["Tout Tradition", "Moulin à café manuel", "Boîte de conservation"],
-    icon: "✦",
+    icon: "", // "✦"
   },
 ]
 
@@ -190,7 +191,7 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
         <div style={{
           position: "absolute", top: "1rem", right: "1rem",
           width: "8px", height: "8px", borderRadius: "50%",
-          background: "#8a2b0b", boxShadow: "0 0 12px #8a2b0b",
+          background: "var(--color-rust)", boxShadow: "0 0 12px var(--color-rust)",
         }} />
       )}
 
@@ -198,7 +199,7 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
       <p style={{
         fontFamily: "Courier New, monospace",
         fontSize: "12px",                             // FIX 1 — was 10px
-        color: "#8a2b0b",
+        color: "var(--color-rust)",
         textTransform: "uppercase", letterSpacing: "0.3em",
         marginBottom: "0.5rem",
       }}>
@@ -208,7 +209,7 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
       {/* Name */}
       <h3 style={{
         fontFamily: "'Bodoni Moda', serif",
-        fontSize: "2.2rem", color: "#f5f0e8",
+        fontSize: "2.2rem", color: "var(--color-cream)",
         fontWeight: 700, fontStyle: "italic",
         marginBottom: "0.75rem", lineHeight: 1,
       }}>
@@ -221,7 +222,7 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
           <span key={n} style={{
             fontFamily: "Courier New, monospace",
             fontSize: "11px",                         // FIX 1 — was 9px
-            color: "rgba(245,240,232,0.5)",
+            color: "rgba(var(--color-cream-rgb), 0.5)",
             textTransform: "uppercase", letterSpacing: "0.2em",
             border: "1px solid rgba(70,30,5,0.4)",
             padding: "2px 8px",
@@ -261,7 +262,7 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
         fontFamily: "Courier New, monospace",
         fontSize: "12px",                             // FIX 1 — was 10px
         textTransform: "uppercase", letterSpacing: "0.25em",
-        color: selected ? "#f5f0e8" : "rgba(245,240,232,0.3)",
+        color: selected ? "var(--color-cream)" : "rgba(245,240,232,0.3)",
         borderTop: "1px solid rgba(70,30,5,0.3)",
         paddingTop: "0.8rem",
         transition: "color 0.3s ease",
@@ -270,8 +271,8 @@ function CoffeeCard({ coffee, selected, onClick, index, anySelected }) {
         <span style={{
           display: "inline-block",
           width: "14px", height: "14px", borderRadius: "50%",
-          border: `1px solid ${selected ? "#8a2b0b" : "rgba(70,30,5,0.4)"}`,
-          background: selected ? "#8a2b0b" : "transparent",
+          border: `1px solid ${selected ? "var(--color-rust)" : "rgba(70,30,5,0.4)"}`,
+          background: selected ? "var(--color-rust)" : "transparent",
           flexShrink: 0, transition: "all 0.3s ease",
         }} />
         {selected ? "Sélectionné" : "Sélectionner"}
@@ -324,7 +325,7 @@ function MatrixCell({ coffee, pack, volume, locked, animDelay }) {
         {/* FIX 3 — no "tasses" here, only price */}
         <p style={{
           fontFamily: "'Bodoni Moda', serif",
-          fontSize: "1.8rem", color: "#f5f0e8",
+          fontSize: "1.8rem", color: "var(--color-cream)",
           fontWeight: 700, lineHeight: 1,
         }}>
           {price} €
@@ -337,7 +338,7 @@ function MatrixCell({ coffee, pack, volume, locked, animDelay }) {
           fontFamily: "Courier New, monospace",
           fontSize: "11px",                           // FIX 1 — was 9px
           textTransform: "uppercase", letterSpacing: "0.2em",
-          color: hover ? "#f5f0e8" : "rgba(245,240,232,0.4)",
+          color: hover ? "var(--color-cream)" : "rgba(245,240,232,0.4)",
           background: hover ? "rgba(138,43,11,0.5)" : "transparent",
           border: `1px solid ${hover ? "rgba(138,43,11,0.8)" : "rgba(70,30,5,0.4)"}`,
           padding: "6px 14px",
@@ -364,7 +365,7 @@ export default function Products() {
 
   return (
     <div style={{
-      background: "#020100", color: "#f5f0e8",
+      background: "var(--color-bg)", color: "var(--color-cream)",
       position: "relative", overflow: "hidden", width: "100%",
       minHeight: "100vh",
     }}>
@@ -400,7 +401,7 @@ export default function Products() {
           <h1 style={{
             fontFamily: "'Bodoni Moda', serif",
             fontSize: "clamp(3rem, 7vw, 6rem)",
-            color: "#f5f0e8",
+            color: "var(--color-cream)",
             fontWeight: 800, fontStyle: "italic",
             lineHeight: 1, marginBottom: "1.5rem",
           }}>
@@ -503,7 +504,7 @@ export default function Products() {
                     <p style={{
                       fontFamily: "'Bodoni Moda', serif",
                       fontSize: "1.7rem",
-                      color: selectedCoffee ? "#f5f0e8" : "rgba(245,240,232,0.2)",
+                      color: selectedCoffee ? "var(--color-cream)" : "rgba(245,240,232,0.2)",
                       fontWeight: 700, fontStyle: "italic",
                       transition: "color 0.5s ease", marginBottom: "0.2rem",
                     }}>
@@ -546,7 +547,7 @@ export default function Products() {
                     <p style={{
                       fontFamily: "'Bodoni Moda', serif",
                       fontSize: "2rem",
-                      color: selectedCoffee ? "#f5f0e8" : "rgba(245,240,232,0.2)",
+                      color: selectedCoffee ? "var(--color-cream)" : "rgba(245,240,232,0.2)",
                       fontWeight: 700, transition: "color 0.5s ease", lineHeight: 1,
                     }}>
                       {volume.label}
@@ -617,7 +618,7 @@ export default function Products() {
                 paddingBottom: "4px", textDecoration: "none",
                 alignSelf: "flex-end", transition: "color 0.3s ease", whiteSpace: "nowrap",
               }}
-              onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--color-amber)"}
               onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.4)"}
             >
               Demander un devis →
@@ -628,48 +629,7 @@ export default function Products() {
       </section>
 
       {/* ── FIX 4 — FOOTER (same as Home) ── */}
-      <footer className="relative py-16 px-6 overflow-hidden">
-        <Orb top="70%" left="99%" size="600px" opacity={0.15} />
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8">
-          <span style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: "2rem", color: "#f5f0e8", fontWeight: 700,
-          }}>
-            caphein
-          </span>
-          <div style={{ display: "flex", gap: "2.5rem" }}>
-            {[
-              { label: "Histoire",  to: "/our-story" },
-              { label: "Culture",   to: "/culture" },
-              { label: "Produits",  to: "/products" },
-              { label: "Contact",   to: "/contact" },
-            ].map(l => (
-              <Link
-                key={l.label}
-                to={l.to}
-                style={{
-                  fontFamily: "Courier New, monospace",
-                  fontSize: "12px",
-                  color: "rgba(245,240,232,0.35)",
-                  textTransform: "uppercase", letterSpacing: "0.25em",
-                  textDecoration: "none", transition: "color 0.3s ease",
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
-                onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.35)"}
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-          <p style={{
-            fontFamily: "Courier New, monospace",
-            fontSize: "11px", color: "rgba(245,240,232,0.2)",
-          }}>
-            © 2025 Caphein. All rights reserved.
-          </p>
-        </div>
-      </footer>
-
+      <Footer />
     </div>
   )
 }

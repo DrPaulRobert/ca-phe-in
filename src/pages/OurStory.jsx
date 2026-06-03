@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+﻿import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
@@ -23,7 +23,7 @@ function Orb({ top, left, size = "70vw", opacity = 0.25 }) {
       style={{
         width: size, height: size,
         top, left,
-        background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
+        background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
         opacity,
         transform: "translate(-50%, -50%)",
       }}
@@ -140,7 +140,7 @@ function StatsBar() {
             <p style={{
               fontFamily: "'Bodoni Moda', serif",
               fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
-              color: "#f5f0e8",
+              color: "var(--color-cream)",
               fontWeight: 800,
               lineHeight: 1,
               marginBottom: "0.6rem",
@@ -181,7 +181,7 @@ function TextSection({ label, heading, paragraphs, align = "left" }) {
             <h2 style={{
               fontFamily: "'Bodoni Moda', serif",
               fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-              color: "#f5f0e8",
+              color: "var(--color-cream)",
               fontWeight: 800,
               lineHeight: 1.15,
               marginBottom: "1.75rem",
@@ -213,7 +213,7 @@ function PullQuote({ text }) {
         <p style={{
           fontFamily: "'Bodoni Moda', serif",
           fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
-          color: "#f5f0e8",
+          color: "var(--color-cream)",
           fontWeight: 700,
           lineHeight: 1.4,
           maxWidth: "700px",
@@ -236,8 +236,8 @@ export default function OurStory() {
   const isMobile = useIsMobile()
   return (
     <div style={{
-      background: "#020100",
-      color: "#f5f0e8",
+      background: "var(--color-bg)",
+      color: "var(--color-cream)",
       position: "relative",
       overflow: "hidden",
       width: "100%",
@@ -257,7 +257,7 @@ export default function OurStory() {
             <h1 style={{
               fontFamily: "'Bodoni Moda', serif",
               fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-              color: "#f5f0e8",
+              color: "var(--color-cream)",
               fontWeight: 800,
               lineHeight: 1,
               marginBottom: "2rem",
@@ -360,7 +360,7 @@ export default function OurStory() {
             <h2 style={{
               fontFamily: "'Bodoni Moda', serif",
               fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
-              color: "#f5f0e8",
+              color: "var(--color-cream)",
               fontWeight: 800,
               marginBottom: "2rem",
             }}>
@@ -374,14 +374,14 @@ export default function OurStory() {
                 fontSize: "13px",
                 textTransform: "uppercase",
                 letterSpacing: "0.25em",
-                color: "rgba(245,240,232,0.5)",
+                color: "rgba(var(--color-cream-rgb), 0.5)",
                 borderBottom: "1px solid rgba(70,30,5,0.5)",
                 paddingBottom: "4px",
                 textDecoration: "none",
                 transition: "color 0.3s ease",
               }}
-              onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
-              onMouseLeave={e => e.currentTarget.style.color = "rgba(245,240,232,0.5)"}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--color-amber)"}
+              onMouseLeave={e => e.currentTarget.style.color = "rgba(var(--color-cream-rgb), 0.5)"}
             >
               Voir nos produits →
             </Link>

@@ -113,7 +113,7 @@ function ScrollbarDesktop() {
             top: thumbTop,
             width: "5px",              // ← thumb width
             height: thumbHeight,
-            background: "#f5f0e8",     // ← thumb color
+            background: "var(--color-cream)",     // ← thumb color
             borderRadius: "2px",
             cursor: "grab",
             pointerEvents: "all",      // thumb is clickable even though parent is not
@@ -138,10 +138,10 @@ function ScrollbarDesktop() {
 
 // ─── EXPORTED COMPONENT — renders nothing on mobile ──────────────────────────
 export default function Scrollbar() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1025)   // window.innerWidth < 768
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    const handleResize = () => setIsMobile(window.innerWidth < 1025)   // window.innerWidth < 768
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
