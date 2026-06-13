@@ -270,8 +270,8 @@ export default function Contact() {
               <ContactItem
                 icon="✉"
                 label="Email"
-                value="cafein-contact@gmail.com"
-                href="mailto:cafein-contact@gmail.com"
+                value="caphein.contact@gmail.com"
+                href="mailto:caphein.contact@gmail.com"     /*Only occurences of mail address*/
               />
             </div>
           </FadeIn>
