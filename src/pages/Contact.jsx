@@ -90,7 +90,7 @@ function ContactItem({ icon, label, value, href }) {
 
 // ─── PILL SELECTOR ────────────────────────────────────────────────────────────
 function PillSelector({ value, onChange }) {
-  const options = ["Business", "Individual"]
+  const options = ["Business", "Particulier"]
   return (
     <div style={{ display: "flex", gap: "0" }}>
       {options.map((opt, i) => {
@@ -367,7 +367,7 @@ export default function Contact() {
                     display: "block",
                     marginBottom: "0.75rem",
                   }}>
-                    Vous êtes
+                    Vous êtes un
                   </label>
                   <PillSelector value={profileType} onChange={setProfileType} />
                 </div>
