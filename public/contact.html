@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- 
+      This file exists solely for Netlify form detection.
+      Netlify scans static HTML at build time — since this is a React SPA,
+      the form in Contact.jsx is rendered by JavaScript and invisible to Netlify's scanner.
+      This hidden form registers the "contact" form with Netlify.
+      It is never shown to users.
+    -->
+    <form name="contact" netlify data-netlify="true" hidden>
+      <input type="text"  name="profile" />
+      <input type="email" name="email"   />
+      <input type="text"  name="subject" />
+      <textarea           name="message"></textarea>
+    </form>
+  </body>
+</html>
