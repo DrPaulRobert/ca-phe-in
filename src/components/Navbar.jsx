@@ -62,20 +62,76 @@ function getActiveLabel(pathname) {
   return null  // landing page — no single active tab
 }
 
+function DesktopDrawer({ open, onClose }) {
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === "Escape") onClose() }
+    window.addEventListener("keydown", handleKey)
+    return () => window.removeEventListener("keydown", handleKey)
+  }, [onClose])
+
+  const links = [
+    { label: "Histoire",     to: "/our-story"   },
+    { label: "Culture café", to: "/culture"     },
+    { label: "Partenaires",  to: "/partenaires" },
+    { label: "Nos produits", to: "/products"    },
+    { label: "Nouveautés",   to: "/nouveaute"   },
+    { label: "Contact",      to: "/contact"     },
+    { label: "Mon café",     to: "/mon-cafe"    },
+    { label: "Panier",       to: "/panier"      },
+  ]
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position: "fixed", top: "7rem", left: 0, right: 0, bottom: 0, background: "rgba(2,1,0,0.5)", backdropFilter: "blur(2px)", zIndex: 48, opacity: open ? 1 : 0, pointerEvents: open ? "all" : "none", transition: "opacity 0.35s ease" }} />
+      <div style={{ position: "fixed", top: "9rem", left: 0, bottom: 0, width: "350px", background: "rgba(2,1,0,0.97)", backdropFilter: "blur(12px)", zIndex: 49, display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 3rem", transform: open ? "translateX(0)" : "translateX(-100%)", transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)", borderRight: "1px solid rgba(70,30,5,0.2)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          {links.map((l, i) => (
+            <Link key={l.label} to={l.to} onClick={onClose} style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "clamp(1.6rem, 2.5vw, 2.2rem)", color: "var(--color-cream)", fontWeight: 700, textDecoration: "none", letterSpacing: "-0.01em", lineHeight: 1.5, opacity: open ? 1 : 0, transform: open ? "translateX(0)" : "translateX(-12px)", transition: `opacity 0.4s ease ${i * 0.05 + 0.1}s, transform 0.4s ease ${i * 0.05 + 0.1}s, color 0.3s ease` }}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--color-amber)"}
+              onMouseLeave={e => e.currentTarget.style.color = "var(--color-cream)"}
+            >{l.label}</Link>
+          ))}
+        </div>
+        <div style={{ width: "48px", height: "1px", background: "rgba(138,43,11,0.4)", marginTop: "2.5rem", opacity: open ? 1 : 0, transition: "opacity 0.4s ease 0.5s" }} />
+      </div>
+    </>
+  )
+}
+
 // ─────────────────────────────────────────────
 // NAVICON
 // ─────────────────────────────────────────────
-function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, isHome, isActive }) {
+function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, isHome, isActive, onClick }) {
   const isMenu = label === "Menu"
   const permanentlyVisible = !isMenu && (isHome || isActive)
   const [hovered, setHovered] = useState(false)
 
-  // Support multiline labels: "Culture\ncafé" renders on two lines
   const labelContent = label.includes("\n")
     ? label.split("\n").map((line, i) => (
         <span key={i} style={{ display: "block", textAlign: "center" }}>{line}</span>
       ))
     : label
+
+  if (isMenu) {
+    return (
+      <div
+        style={{ marginRight: marginRight || 0, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+        onClick={onClick}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <div
+          className="rounded-full border flex items-center justify-center transition-all duration-300"
+          style={{ width: "2.5rem", height: "2.5rem", background: "rgba(70,30,5,0.15)", backdropFilter: "blur(8px)", borderColor: hovered ? "rgba(180,90,20,0.6)" : "rgba(87,83,78,0.4)" }}
+        >
+          <img src={icon} alt={label} style={{ width: "2rem", height: "1.5rem", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
+        </div>
+        <span className="font-mono uppercase tracking-widest" style={{ fontSize: "12px", position: "absolute", top: labelTop || "2.5rem", left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", color: hovered ? "var(--color-amber)" : "rgba(168,162,158,1)", opacity: hovered ? 1 : 0, transition: "color 0.3s ease, opacity 0.3s ease", pointerEvents: "none" }}>
+          {label}
+        </span>
+      </div>
+    )
+  }
 
   return (
     <Link
@@ -88,11 +144,7 @@ function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, is
       {circle ? (
         <div
           className="rounded-full border flex items-center justify-center transition-all duration-300"
-          style={{
-            width: "2.5rem", height: "2.5rem",
-            background: "rgba(70,30,5,0.15)", backdropFilter: "blur(8px)",
-            borderColor: hovered ? "rgba(180,90,20,0.6)" : "rgba(87,83,78,0.4)",
-          }}
+          style={{ width: "2.5rem", height: "2.5rem", background: "rgba(70,30,5,0.15)", backdropFilter: "blur(8px)", borderColor: hovered ? "rgba(180,90,20,0.6)" : "rgba(87,83,78,0.4)" }}
         >
           <img src={icon} alt={label} style={{ width: "2rem", height: "1.5rem", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
         </div>
@@ -101,7 +153,6 @@ function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, is
           <img src={icon} alt={label} style={{ width: "2rem", height: "1.5rem", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
         </div>
       )}
-
       <span
         className="font-mono uppercase tracking-widest"
         style={{
@@ -112,7 +163,6 @@ function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, is
           transform: "translateX(-50%)",
           whiteSpace: label.includes("\n") ? "normal" : "nowrap",
           textAlign: "center",
-          // FIX: color via state, not Tailwind — inline style always wins
           color: hovered ? "var(--color-amber)" : "rgba(168,162,158,1)",
           opacity: permanentlyVisible && !isHome ? 1 : (hovered ? 1 : 0),
           animation: (permanentlyVisible && isHome)
@@ -245,6 +295,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025)    // window.innerWidth < 768
   const [menuOpen, setMenuOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const isHome    = pathname === "/"
   const activeLabel = getActiveLabel(pathname)
@@ -263,10 +314,10 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  useEffect(() => { setMenuOpen(false) }, [pathname])
+  useEffect(() => { setMenuOpen(false); setDrawerOpen(false) }, [pathname])
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : ""
+    document.body.style.overflow = (menuOpen || drawerOpen) ? "hidden" : ""
     return () => { document.body.style.overflow = "" }
   }, [menuOpen])
 
@@ -280,8 +331,8 @@ export default function Navbar() {
       `}</style>
 
       <nav className="fixed top-0 left-0 w-full z-50" style={{
-        background: (scrolled || menuOpen) ? "rgba(2,1,0,0.85)" : "transparent",
-        backdropFilter: (scrolled || menuOpen) ? "blur(5px)" : "none",
+        background: (scrolled || menuOpen || drawerOpen) ? "rgba(2,1,0,0.85)" : "transparent",
+        backdropFilter: (scrolled || menuOpen || drawerOpen) ? "blur(5px)" : "none",
         transition: "background 0.4s ease, backdrop-filter 0.4s ease",
       }}>
 
@@ -323,6 +374,7 @@ export default function Navbar() {
                     key={l.label} {...l}
                     isHome={isHome}
                     isActive={activeLabel === l.label}
+                    onClick={l.label === "Menu" ? () => setDrawerOpen(o => !o) : undefined}
                   />
                 ))}
               </div>
@@ -361,7 +413,9 @@ export default function Navbar() {
           </>
         )}
       </nav>
-
+      {!isMobile && (
+        <DesktopDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      )}
       {isMobile && (
         <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} lang={lang} setLang={setLang} />
       )}

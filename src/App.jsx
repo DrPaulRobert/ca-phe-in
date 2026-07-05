@@ -5,6 +5,7 @@ import Home from "./pages/Home"
 import OurStory from "./pages/OurStory"
 import Products from "./pages/Products"
 import Partners from "./pages/Partners"
+import Culture from "./pages/Culture"
 import Services from "./pages/Services"
 import Contact from "./pages/Contact"
 
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/our-story" element={<OurStory />} />
         <Route path="/products" element={<Products />} />
         <Route path="/partenaires" element={<Partners />} />
+        <Route path="/culture" element={<Culture />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>

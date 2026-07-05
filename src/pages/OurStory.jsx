@@ -173,7 +173,7 @@ function TextSection({ label, heading, paragraphs, align = "left" }) {
       <div style={{
         display: "flex",
         justifyContent: isRight ? "flex-end" : "flex-start",
-        marginBottom: isMobile ? "3rem" : "6rem",
+        marginBottom: isMobile ? "3rem" : "45rem",                    /*Margin between texts*/
       }}>
         <div style={{ maxWidth: "620px", width: "100%" }}>
           <SectionLabel>{label}</SectionLabel>
@@ -376,7 +376,7 @@ export default function OurStory() {
                 letterSpacing: "0.25em",
                 color: "rgba(var(--color-cream-rgb), 0.5)",
                 borderBottom: "1px solid rgba(70,30,5,0.5)",
-                paddingBottom: "4px",
+                paddingBottom: "6px",
                 textDecoration: "none",
                 transition: "color 0.3s ease",
               }}

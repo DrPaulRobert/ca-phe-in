@@ -3,7 +3,10 @@ import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
 import Footer from "../components/Footer"
 import franceSrc from "../assets/FranceTransparent.png"
-import vietnamSrc from "../assets/VietnamTransparent.png"
+// import vietnamBgSrc from "../assets/Cartes/VIETNAM/MapVietnam_fond-01.png"
+// Import SVG as React component — requires vite-plugin-svgr
+import vietnamBorderSrc from "../assets/Cartes/VIETNAM/MapVietnam_limit country-01.svg"
+import vietnamBgSrc from "../assets/Cartes/VIETNAM/result.png"
 
 // ─── MOBILE DETECTION HOOK ───────────────────────────────────────────────────
 function useIsMobile() {
@@ -21,7 +24,7 @@ function Orb({ top, left, size = "60vw", opacity = 0.2 }) {
   return (
     <div className="absolute rounded-full pointer-events-none" style={{
       width: size, height: size, top, left,
-      background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
+      background: "radial-gradient(circle, #8a2b0b 0%, transparent 60%)",
       opacity, transform: "translate(-50%, -50%)",
     }} />
   )
@@ -30,44 +33,34 @@ function Orb({ top, left, size = "60vw", opacity = 0.2 }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // ── EDIT DOT POSITIONS HERE ───────────────────────────────────────────────────
 // x and y are percentages (0–100) of the map container width/height
-// Increase x → moves right │ Increase y → moves down
+// lx, ly → label offset in px from dot center
 // ─────────────────────────────────────────────────────────────────────────────
 const DOT_POSITIONS = {
-  paris:    { x: 46, y: 28, lx:  12, ly: 0  },
-  toulouse: { x: 42, y: 70, lx:  12, ly: 0  },
-  hanoi:    { x: 49, y: 16, lx:  12, ly: 0  },
-  daklak:   { x: 67, y: 71, lx:  -18, ly: -15  },
+  paris:    { x: 46, y: 28, lx:  12, ly: 0   },
+  toulouse: { x: 42, y: 70, lx:  12, ly: 0   },
+  hanoi:    { x: 51.5, y: 22, lx:  12, ly: 0   },
+  daklak:   { x: 60, y: 69, lx: -18, ly: -15 },
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ── EDIT MOBILE DOT POSITIONS HERE ───────────────────────────────────────────
-// x, y   → dot position as % of map size
-// lx, ly → label offset in px from the dot center
-//           lx: positive = right, negative = left
-//           ly: positive = down,  negative = up
-// ─────────────────────────────────────────────────────────────────────────────
 const DOT_POSITIONS_MOBILE = {
-  paris:    { x: 47, y: 25, lx:  12, ly: 0  },
-  toulouse: { x: 43, y: 72, lx:  12, ly: 0  },
-  hanoi:    { x: 49, y: 16, lx:  -20, ly: -17  },
-  daklak:   { x: 65, y: 71, lx: -45, ly: -20  },
+  paris:    { x: 47, y: 25, lx:  12, ly: 0   },
+  toulouse: { x: 43, y: 72, lx:  12, ly: 0   },
+  hanoi:    { x: 51, y: 20, lx: -20, ly: -17 },
+  daklak:   { x: 60, y: 65, lx: -45, ly: -20 },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ── EDIT LINE STYLE HERE ──────────────────────────────────────────────────────
-// dashArray: "0" = solid │ "4 5" = dashed │ "2 4" = dotted
-// ─────────────────────────────────────────────────────────────────────────────
 const LINE_STYLE = {
-  color:     "rgba(var(--color-amber-rgb), 0.6)",
+  color:     "rgba(194,68,15,0.6)",
   width:     1,
   dashArray: "4 5",
 }
 
-const MAP_FILTER_DEFAULT = "invert(1) brightness(0.75)"
-const MAP_FILTER_HOVER   = "invert(1) sepia(0.8) saturate(4) hue-rotate(320deg) brightness(0.85)"
-
-const MAP_HEIGHT_DESKTOP = 500  // px desktop
-const MAP_HEIGHT_MOBILE  = 320  // px mobile — shorter since it's full width
+// ─────────────────────────────────────────────────────────────────────────────
+// ── EDIT MAP SIZES HERE ───────────────────────────────────────────────────────
+const MAP_HEIGHT_DESKTOP = 800   // px — change to resize both maps on desktop
+const MAP_HEIGHT_MOBILE  = 280   // px — change to resize both maps on mobile
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const francePartners = [
@@ -100,64 +93,78 @@ const vietnamPartners = [
   },
 ]
 
-// ─── SWITCH BUTTON ────────────────────────────────────────────────────────────
-function SwitchButton({ label, onClick, direction }) {
-  const [hov, setHov] = useState(false)
+// ─── DOT ─────────────────────────────────────────────────────────────────────
+function Dot({ p, x, y, pos, isSel, isMobile, onSelect }) {
   return (
     <div
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      onClick={() => onSelect(p)}
       style={{
-        display: "flex",
-        flexDirection: direction === "up" ? "column-reverse" : "column",
-        alignItems: "center",
-        gap: "0.5rem",
-        cursor: "pointer",
-        padding: "0.6rem 1.4rem",
-        position: "sticky",
-        bottom: direction === "down" ? "1.5rem" : "auto",
-        top:    direction === "up"   ? "10rem"  : "auto",
-        zIndex: 40,
-        background: "rgba(2,1,0,0.85)",
-        backdropFilter: "blur(10px)",
-        border: `1px solid ${hov ? "rgba(var(--color-amber-rgb), 0.6)" : "rgba(138,43,11,0.25)"}`,
-        borderRadius: "2rem",
-        transition: "border-color 0.3s ease",
-        alignSelf: "center",
-        width: "fit-content",
-        margin: "0 auto",
+        position: "absolute", left: x, top: y,
+        width: 0, height: 0,
+        cursor: "pointer", zIndex: 10,
       }}
     >
-      <p style={{
-        fontFamily: "Courier New, monospace",
-        fontSize: "11px",
-        color: hov ? "var(--color-amber)" : "rgba(245,240,232,0.45)",
-        textTransform: "uppercase",
-        letterSpacing: "0.3em",
-        transition: "color 0.3s ease",
-        margin: 0,
-        whiteSpace: "nowrap",
+      {/* Large tap area for mobile */}
+      {isMobile && (
+        <div style={{
+          position: "absolute", width: "44px", height: "44px",
+          top: 0, left: 0, transform: "translate(-50%, -50%)",
+        }} />
+      )}
+      {/* Pulse ring when selected */}
+      {isSel && (
+        <div style={{
+          position: "absolute", width: "22px", height: "22px",
+          borderRadius: "50%",
+          border: "1px solid rgba(194,68,15,0.5)",
+          top: 0, left: 0,
+          transform: "translate(-50%, -50%)",
+          animation: "dotPulse 1.8s ease-out infinite",
+          pointerEvents: "none",
+        }} />
+      )}
+      {/* Outer ring */}
+      <div style={{
+        position: "absolute",
+        width: isMobile ? "18px" : "14px",
+        height: isMobile ? "18px" : "14px",
+        borderRadius: "50%", top: 0, left: 0,
+        transform: "translate(-50%, -50%)",
+        border: `1px solid ${isSel ? "rgba(194,68,15,0.9)" : "rgba(245,240,232,0.5)"}`,
+        background: isSel ? "rgba(138,43,11,0.3)" : "transparent",
+        transition: "all 0.3s ease",
       }}>
-        {label}
+        {/* Inner dot */}
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: isMobile ? "7px" : "5px",
+          height: isMobile ? "7px" : "5px",
+          borderRadius: "50%",
+          background: isSel ? "#c2440f" : "rgba(245,240,232,0.7)",
+          transition: "background 0.3s ease",
+        }} />
+      </div>
+      {/* City label */}
+      <p style={{
+        position: "absolute",
+        left: `${pos.lx}px`, top: `${pos.ly}px`,
+        transform: "translateY(-50%)",
+        fontFamily: "Courier New, monospace",
+        fontSize: isMobile ? "10px" : "9px",
+        color: isSel ? "rgba(245,240,232,0.85)" : "rgba(245,240,232,0.4)",
+        textTransform: "uppercase", letterSpacing: "0.15em",
+        whiteSpace: "nowrap", margin: 0,
+        pointerEvents: "none", transition: "color 0.3s ease",
+      }}>
+        {p.city}
       </p>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-        {direction === "up" ? (
-          <path d="M6 10L6 2M6 2L2 6M6 2L10 6"
-            stroke={hov ? "var(--color-amber)" : "rgba(245,240,232,0.4)"}
-            strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-        ) : (
-          <path d="M6 2L6 10M6 10L2 6M6 10L10 6"
-            stroke={hov ? "var(--color-amber)" : "rgba(245,240,232,0.4)"}
-            strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-        )}
-      </svg>
     </div>
   )
 }
 
-// ─── MAP WITH DOTS ────────────────────────────────────────────────────────────
-function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
+// ─── FRANCE MAP ───────────────────────────────────────────────────────────────
+function FranceMapWithDots({ selected, onSelect, mapRef, isMobile }) {
   const containerRef = useRef(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
   const [hovered, setHovered] = useState(false)
@@ -172,11 +179,12 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
     const ro = new ResizeObserver(measure)
     if (containerRef.current) ro.observe(containerRef.current)
     return () => ro.disconnect()
-  }, [src])
+  }, [])
 
-  useEffect(() => {
-    if (mapRef) mapRef.current = containerRef.current
-  })
+  useEffect(() => { if (mapRef) mapRef.current = containerRef.current })
+
+  const filterDefault = "invert(1) brightness(0.75)"
+  const filterHover   = "invert(1) sepia(0.8) saturate(4) hue-rotate(320deg) brightness(0.85)"
 
   return (
     <div
@@ -186,115 +194,122 @@ function MapWithDots({ src, partners, selected, onSelect, mapRef, isMobile }) {
       onMouseLeave={() => !isMobile && setHovered(false)}
     >
       <img
-        src={src}
+        src={franceSrc}
         alt=""
         style={{
           position: "absolute", top: 0, left: 0,
           width: "100%", height: "100%",
-          objectFit: "contain", objectPosition: "center",
-          display: "block",
-          filter: hovered ? MAP_FILTER_HOVER : MAP_FILTER_DEFAULT,
+          objectFit: "contain", objectPosition: "top",
+          filter: hovered ? filterHover : filterDefault,
           transition: "filter 0.35s ease",
         }}
       />
-
-      {/* Dots */}
-      {size.w > 0 && partners.map(p => {
-        const positions = isMobile ? DOT_POSITIONS_MOBILE : DOT_POSITIONS
-        const pos   = positions[p.id]
-        const x     = (pos.x / 100) * size.w
-        const y     = (pos.y / 100) * size.h
-        const isSel = selected?.id === p.id
-        // larger tap area on mobile
-        const hitSize = isMobile ? "44px" : "0px"
-
+      {size.w > 0 && francePartners.map(p => {
+        const pos = (isMobile ? DOT_POSITIONS_MOBILE : DOT_POSITIONS)[p.id]
+        const x = (pos.x / 100) * size.w
+        const y = (pos.y / 100) * size.h
         return (
-          <div
-            key={p.id}
-            onClick={() => onSelect(p)}
-            style={{
-              position: "absolute",
-              left: x, top: y,
-              width: 0, height: 0,
-              cursor: "pointer",
-              zIndex: 10,
-            }}
-          >
-            {/* Invisible large tap area for mobile */}
-            {isMobile && (
-              <div style={{
-                position: "absolute",
-                width: hitSize, height: hitSize,
-                top: 0, left: 0,
-                transform: "translate(-50%, -50%)",
-              }} />
-            )}
-
-            {/* Pulse ring */}
-            {isSel && (
-              <div style={{
-                position: "absolute",
-                width: "22px", height: "22px",
-                borderRadius: "50%",
-                border: "1px solid rgba(194,68,15,0.5)",
-                top: 0, left: 0,
-                transform: "translate(-50%, -50%)",
-                animation: "dotPulse 1.8s ease-out infinite",
-                pointerEvents: "none",
-              }} />
-            )}
-
-            {/* Outer ring */}
-            <div style={{
-              position: "absolute",
-              width: isMobile ? "18px" : "14px",
-              height: isMobile ? "18px" : "14px",
-              borderRadius: "50%",
-              top: 0, left: 0,
-              transform: "translate(-50%, -50%)",
-              border: `1px solid ${isSel ? "rgba(194,68,15,0.9)" : "rgba(var(--color-cream-rgb), 0.5)"}`,
-              background: isSel ? "rgba(var(--color-rust-rgb), 0.3)" : "transparent",
-              transition: "all 0.3s ease",
-            }}>
-              {/* Inner dot */}
-              <div style={{
-                position: "absolute",
-                top: "50%", left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: isMobile ? "7px" : "5px",
-                height: isMobile ? "7px" : "5px",
-                borderRadius: "50%",
-                background: isSel ? "var(--color-amber)" : "rgba(245,240,232,0.7)",
-                transition: "background 0.3s ease",
-              }} />
-            </div>
-
-            {/* City label — position controlled by lx/ly in config */}
-            <p style={{
-              position: "absolute",
-              left: `${pos.lx}px`,
-              top: `${pos.ly}px`,
-              transform: "translateY(-50%)",
-              fontFamily: "Courier New, monospace",
-              fontSize: isMobile ? "10px" : "9px",
-              color: isSel ? "rgba(245,240,232,0.85)" : "rgba(245,240,232,0.4)",
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              whiteSpace: "nowrap",
-              margin: 0,
-              pointerEvents: "none",
-              transition: "color 0.3s ease",
-            }}>
-              {p.city}
-            </p>
-          </div>
+          <Dot key={p.id} p={p} x={x} y={y} pos={pos}
+            isSel={selected?.id === p.id} isMobile={isMobile} onSelect={onSelect} />
         )
       })}
     </div>
   )
 }
 
-// ─── CONNECTING LINE — desktop only ──────────────────────────────────────────
+// ─── VIETNAM MAP ──────────────────────────────────────────────────────────────
+// Three layers stacked:
+// 1. Background PNG (fond) — landscape atmosphere
+// 2. SVG border as React component — hover triggers on actual shape, not rectangle
+// 3. Dots overlaid via absolute positioning
+//
+// The SVG viewBox is "0 0 460.37 259" (landscape 1.78:1)
+// The background PNG is 1919x1080 (also 1.78:1) — they align perfectly
+//
+// Hover color override:
+// SVG uses .cls-1/.cls-2/.cls-5 with stroke:#e8e0d5 (cream)
+// On hover we inject a <style> tag that overrides those classes to amber
+// ─────────────────────────────────────────────────────────────────────────────
+function VietnamMapWithDots({ selected, onSelect, mapRef, isMobile }) {
+  const containerRef = useRef(null)
+  const [size, setSize] = useState({ w: 0, h: 0 })
+  const [hovered, setHovered] = useState(false)
+
+  useEffect(() => {
+    const measure = () => {
+      if (!containerRef.current) return
+      setSize({ w: containerRef.current.offsetWidth, h: containerRef.current.offsetHeight })
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (containerRef.current) ro.observe(containerRef.current)
+    return () => ro.disconnect()
+  }, [])
+
+  useEffect(() => { if (mapRef) mapRef.current = containerRef.current })
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: "460.37 / 259",
+        // No background, no isolation — let page background show through alpha
+      }}
+      onMouseEnter={() => !isMobile && setHovered(true)}
+      onMouseLeave={() => !isMobile && setHovered(false)}
+    >
+      {/* ── Layer 1: Background atmosphere PNG ──
+          Using <img> with mix-blend-mode lighten:
+          - Transparent (alpha=0) areas → page background shows through
+          - Dark land areas → visible against dark background               */}
+      <img
+        src={vietnamBgSrc}
+        alt=""
+        style={{
+          position: "absolute", top: 0, left: 0,
+          width: "100%", height: "100%",
+          objectFit: "contain",
+          objectPosition: "center",
+          opacity: 0.8,
+        }}
+      />
+
+
+      {/* ── Layer 2: SVG border as img ───────────────────────────────────────
+          Both use objectFit contain + same objectPosition → perfect overlap
+          filter: invert makes dark SVG strokes become light/cream          */}
+      <img
+        src={vietnamBorderSrc}
+        alt=""
+        style={{
+          position: "absolute", top: 0, left: 0,
+          width: "100%", height: "100%",
+          objectFit: "contain",
+          objectPosition: "center",
+          filter: hovered
+            ? "invert(1) sepia(1) saturate(4) hue-rotate(320deg) brightness(2)"           /* borders shape */
+            : "invert(1) brightness(4)",
+          transition: "filter 0.35s ease",
+        }}
+      />
+
+      {/* ── Layer 3: Dots ── */}
+      {size.w > 0 && vietnamPartners.map(p => {
+        const pos = (isMobile ? DOT_POSITIONS_MOBILE : DOT_POSITIONS)[p.id]
+        const x = (pos.x / 100) * size.w
+        const y = (pos.y / 100) * size.h
+        return (
+          <Dot key={p.id} p={p} x={x} y={y} pos={pos}
+            isSel={selected?.id === p.id} isMobile={isMobile} onSelect={onSelect} />
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── CONNECTING LINE ──────────────────────────────────────────────────────────
 function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
   const [coords, setCoords] = useState(null)
 
@@ -304,13 +319,10 @@ function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
     const map  = mapRef.current.getBoundingClientRect()
     const card = cardRef.current.getBoundingClientRect()
     const pos  = DOT_POSITIONS[dotId]
-
     const dotX = map.left + (pos.x / 100) * map.width  - root.left
     const dotY = map.top  + (pos.y / 100) * map.height - root.top
-
     const cardEdgeX = isFrance ? card.left - root.left : card.right - root.left
     const cardEdgeY = card.top - root.top + card.height * 0.2
-
     setCoords({ x1: dotX, y1: dotY, x2: cardEdgeX, y2: cardEdgeY, w: root.width, h: root.height })
   }, [dotId, isFrance, mapRef, cardRef, rootRef])
 
@@ -345,6 +357,7 @@ function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
 function PartnerInfo({ partner, cardRef }) {
   return (
     <div ref={cardRef} style={{ animation: "fadeIn 0.3s ease forwards", opacity: 0 }}>
+      {/* ── Placeholder image — replace src with real photo when available ── */}
       <div style={{
         width: "100%", aspectRatio: "16/9",
         background: "radial-gradient(ellipse at 40% 40%, rgba(138,43,11,0.25) 0%, #0a0604 80%)",
@@ -354,8 +367,7 @@ function PartnerInfo({ partner, cardRef }) {
       }}>
         <p style={{
           fontFamily: "Courier New, monospace", fontSize: "11px",
-          color: "rgba(245,240,232,0.2)", textTransform: "uppercase",
-          letterSpacing: "0.2em",
+          color: "rgba(245,240,232,0.2)", textTransform: "uppercase", letterSpacing: "0.2em",
         }}>photo à venir</p>
       </div>
       <p style={{
@@ -371,7 +383,7 @@ function PartnerInfo({ partner, cardRef }) {
       }}>{partner.name}</h3>
       <p style={{
         fontFamily: "Courier New, monospace", fontSize: "14px",
-        color: "rgba(var(--color-cream-rgb), 0.5)", lineHeight: 1.85,
+        color: "rgba(245,240,232,0.5)", lineHeight: 1.85,
       }}>{partner.description}</p>
     </div>
   )
@@ -395,51 +407,117 @@ function EmptyInfo() {
   )
 }
 
+// ─── COUNTRY SECTION ──────────────────────────────────────────────────────────
+function CountrySection({ title, partners, MapComponent, defaultSelectedId, isMobile, isFrance }) {
+  const defaultPartner = partners.find(p => p.id === defaultSelectedId) || null
+  const [selected, setSelected] = useState(defaultPartner)
+
+  const mapRef  = useRef(null)
+  const cardRef = useRef(null)
+  const rootRef = useRef(null)
+  const infoRef = useRef(null)
+
+  const handleSelect = (p) => {
+  setSelected(prev => prev?.id === p.id ? null : p)
+}
+
+  return (
+    <div
+      ref={rootRef}
+      style={{
+        position: "relative",
+        /*maxWidth: "1200px", width: "100%",*/
+        width: "90%",
+        margin: "0 auto", /*margin: "0 auto",*/
+        padding: isMobile ? "1rem" : "3.5rem 2rem",        /*whole padding*/
+        marginBottom: isMobile ? "3rem" : "4rem",
+      }}
+    >
+      {/* Country title */}                                 
+      <h2 style={{
+        fontFamily: "'Bodoni Moda', serif",
+        fontSize: isMobile ? "clamp(1.5rem, 6vw, 2rem)" : "clamp(1.8rem, 3vw, 2.8rem)",
+        color: "var(--color-cream)", fontWeight: 800,
+        lineHeight: 2,
+        marginBottom: isMobile ? "1.5rem" : "0.5rem",
+        textAlign: isMobile ? "left" : (isFrance ? "left" : "right"),
+        paddingLeft: (!isMobile && isFrance) ? "14%" : "0%",             /*Title padding*/
+        paddingRight: (!isMobile && !isFrance) ? "28%" : "0%",
+        position: "relative", zIndex: 1,
+      }}>
+        {title}
+      </h2>
+
+      {isMobile ? (
+        /* ── MOBILE: map full width, info below ── */
+        <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
+          <MapComponent
+            selected={selected}
+            onSelect={handleSelect}
+            mapRef={mapRef}
+            isMobile={true}
+          />
+          <div ref={infoRef} style={{ paddingTop: "0.5rem" }}>
+            {selected
+              ? <PartnerInfo partner={selected} cardRef={cardRef} />
+              : <EmptyInfo />
+            }
+          </div>
+        </div>
+      ) : (
+        /* ── DESKTOP: side by side ── */
+        <>
+          <div style={{
+            display: "flex", gap: "2rem",
+            alignItems: "flex-start",
+            flexDirection: isFrance ? "row" : "row-reverse",
+            position: "relative", zIndex: 1,
+          }}>
+            {/* Map container — control width here */}
+            <div style={{ flex: "0 0 70%", maxWidth: "70%" }}>
+              <MapComponent
+                selected={selected}
+                onSelect={handleSelect}
+                mapRef={mapRef}
+                isMobile={false}
+              />
+            </div>
+            {/* Info panel */}
+            <div style={{
+              flex: 1, display: "flex",
+              flexDirection: "column", justifyContent: "center",
+              minHeight: "260px",
+            }}>
+              {selected
+                ? <PartnerInfo partner={selected} cardRef={cardRef} />
+                : <EmptyInfo />
+              }
+            </div>
+          </div>
+
+          {/* Connecting line — desktop only */}
+          {selected && (
+            <ConnectingLine
+              mapRef={mapRef}
+              cardRef={cardRef}
+              dotId={selected.id}
+              rootRef={rootRef}
+              isFrance={isFrance}
+            />
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function Partners() {
   const isMobile = useIsMobile()
 
-  const [country,    setCountry]    = useState("france")
-  const [visible,    setVisible]    = useState(true)
-  const [selectedFR, setSelectedFR] = useState(null)
-  const [selectedVN, setSelectedVN] = useState(null)
-
-  const mapRef    = useRef(null)
-  const cardRef   = useRef(null)
-  const rootRef   = useRef(null)
-  const infoRef   = useRef(null)  // mobile: ref to info block for auto-scroll
-
-  const isFrance    = country === "france"
-  const partners    = isFrance ? francePartners : vietnamPartners
-  const selected    = isFrance ? selectedFR     : selectedVN
-  const setSelected = isFrance ? setSelectedFR  : setSelectedVN
-  const mapSrc      = isFrance ? franceSrc      : vietnamSrc
-
-  const switchTo = (c) => {
-    setVisible(false)
-    setSelectedFR(null)
-    setSelectedVN(null)
-    cardRef.current = null
-    window.scrollTo(0, 0)
-    setTimeout(() => { setCountry(c); setVisible(true) }, 280)
-  }
-
-  // Mobile: auto-scroll to info when a partner is selected
-  const handleSelect = (p) => {
-    setSelected(prev => {
-      const next = prev?.id === p.id ? null : p
-      if (next && isMobile) {
-        setTimeout(() => {
-          infoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-        }, 100)
-      }
-      return next
-    })
-  }
-
   return (
     <div style={{
-      background: "var(--color-bg)", color: "var(--color-cream)",
+      background: "#020100", color: "var(--color-cream)",
       position: "relative", width: "100%", minHeight: "100vh",
     }}>
       <style>{`
@@ -463,122 +541,35 @@ export default function Partners() {
         minHeight: "100vh",
       }}>
 
-        {/* Button above — Vietnam only */}
-        {!isFrance && (
-          <SwitchButton
-            label="Partenaires en France"
-            onClick={() => switchTo("france")}
-            direction="up"
-          />
-        )}
+        <Orb top="25%" left="80%" size="50vw" opacity={0.12} />
+        <Orb top="60%" left="90%" size="50vw" opacity={0.12} />
 
-        {/* ── MAIN CONTENT ── */}
-        <div
-          ref={rootRef}
-          style={{
-            flex: 1, position: "relative",
-            maxWidth: "1200px", width: "100%",
-            margin: "0 auto",
-            padding: isMobile ? "1.5rem 1.5rem" : "2rem 3rem",
-            opacity: visible ? 1 : 0,
-            transition: "opacity 0.28s ease",
-          }}
-        >
-          <Orb top="40%" left={isFrance ? "15%" : "85%"} size="50vw" opacity={0.13} />
+        {/* ── VIETNAM — top ── */}
+        <CountrySection
+          title="Vietnam"
+          partners={vietnamPartners}
+          MapComponent={VietnamMapWithDots}
+          defaultSelectedId="hanoi"
+          isMobile={isMobile}
+          isFrance={false}
+        />
 
-          {/* Country name */}
-          <h2 style={{
-            fontFamily: "'Bodoni Moda', serif",
-            fontSize: isMobile ? "clamp(1.5rem, 6vw, 2rem)" : "clamp(1.8rem, 3vw, 2.8rem)",//"clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
-            color: "var(--color-cream)", fontWeight: 800,
-            lineHeight: 2,
-            marginBottom: isMobile ? "1.5rem" : "2.5rem",
-            // on mobile Vietnam, push title down below the sticky "back to France" button
-            marginTop: (isMobile && !isFrance) ? "5rem" : 0,
-            textAlign: isMobile ? "left" : (isFrance ? "left" : "right"), // "center",
-            paddingLeft: isFrance ? "14%" : "0%",
-            paddingRight: isFrance ? "0%" : "16%",
-            position: "relative", zIndex: 1,
-          }}>
-            {isFrance ? "France" : "Vietnam"}
-          </h2>
+        {/* ── Divider ── */}
+        <div style={{
+          width: "48px", height: "1px",
+          background: "rgba(138,43,11,0.4)",
+          margin: "0 auto 5rem",                       /*Margin between the two maps*/
+        }} />
 
-          {isMobile ? (
-            /* ── MOBILE LAYOUT: map full width, info below ── */
-            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-
-              {/* Map — full width */}
-              <MapWithDots
-                src={mapSrc}
-                partners={partners}
-                selected={selected}
-                onSelect={handleSelect}
-                mapRef={mapRef}
-                isMobile={true}
-              />
-
-              {/* Info — below map, auto-scrolled to on tap */}
-              <div ref={infoRef} style={{ paddingTop: "0.5rem" }}>
-                {selected
-                  ? <PartnerInfo partner={selected} cardRef={cardRef} />
-                  : <EmptyInfo />
-                }
-              </div>
-
-            </div>
-          ) : (
-            /* ── DESKTOP LAYOUT: side by side ── */
-            <>
-              <div style={{
-                display: "flex", gap: "4rem",
-                alignItems: "flex-start",
-                flexDirection: isFrance ? "row" : "row-reverse",
-                position: "relative", zIndex: 1,
-              }}>
-                <div style={{ flex: "0 0 42%", maxWidth: "42%" }}>
-                  <MapWithDots
-                    src={mapSrc}
-                    partners={partners}
-                    selected={selected}
-                    onSelect={(p) => setSelected(prev => prev?.id === p.id ? null : p)}
-                    mapRef={mapRef}
-                    isMobile={false}
-                  />
-                </div>
-                <div style={{
-                  flex: 1, display: "flex",
-                  flexDirection: "column", justifyContent: "center",
-                  minHeight: "260px",
-                }}>
-                  {selected
-                    ? <PartnerInfo partner={selected} cardRef={cardRef} />
-                    : <EmptyInfo />
-                  }
-                </div>
-              </div>
-
-              {/* Connecting line — desktop only */}
-              {selected && (
-                <ConnectingLine
-                  mapRef={mapRef}
-                  cardRef={cardRef}
-                  dotId={selected.id}
-                  rootRef={rootRef}
-                  isFrance={isFrance}
-                />
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Button below — France only */}
-        {isFrance && (
-          <SwitchButton
-            label="Partenaires au Vietnam"
-            onClick={() => switchTo("vietnam")}
-            direction="down"
-          />
-        )}
+        {/* ── FRANCE — bottom ── */}
+        <CountrySection
+          title="France"
+          partners={francePartners}
+          MapComponent={FranceMapWithDots}
+          defaultSelectedId="paris"
+          isMobile={isMobile}
+          isFrance={true}
+        />
 
         <div style={{ marginTop: "4rem" }}>
           <Footer />

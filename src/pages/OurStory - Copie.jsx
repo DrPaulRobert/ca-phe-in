@@ -1,0 +1,396 @@
+﻿import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
+import Grain from "../components/Grain"
+import Scrollbar from "../components/Scrollbar"
+import Footer from "../components/Footer"
+
+// ─── MOBILE DETECTION HOOK ───────────────────────────────────────────────────
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  useEffect(() => {
+    const handle = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", handle)
+    return () => window.removeEventListener("resize", handle)
+  }, [])
+  return isMobile
+}
+
+// ─── ORB ─────────────────────────────────────────────────────────────────────
+function Orb({ top, left, size = "70vw", opacity = 0.25 }) {
+  return (
+    <div
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: size, height: size,
+        top, left,
+        background: "radial-gradient(circle, var(--color-rust) 0%, transparent 60%)",
+        opacity,
+        transform: "translate(-50%, -50%)",
+      }}
+    />
+  )
+}
+
+// ─── FADE IN ON SCROLL ────────────────────────────────────────────────────────
+// Wraps any block — fades + slides up when it enters the viewport
+function FadeIn({ children, delay = 0 }) {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = "1"
+          el.style.transform = "translateY(0)"
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: 0,
+        transform: "translateY(28px)",
+        transition: `opacity 0.75s ease ${delay}s, transform 0.75s ease ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// ─── SECTION LABEL ────────────────────────────────────────────────────────────
+function SectionLabel({ children }) {
+  return (
+    <p style={{
+      fontFamily: "Courier New, monospace",
+      fontSize: "11px",
+      color: "rgba(138,43,11,0.9)",
+      textTransform: "uppercase",
+      letterSpacing: "0.4em",
+      marginBottom: "1.5rem",
+    }}>
+      {children}
+    </p>
+  )
+}
+
+// ─── BODY TEXT ────────────────────────────────────────────────────────────────
+function BodyText({ children }) {
+  return (
+    <p style={{
+      fontFamily: "Courier New, monospace",
+      fontSize: "15px",
+      color: "rgba(245,240,232,0.6)",
+      lineHeight: 1.9,
+    }}>
+      {children}
+    </p>
+  )
+}
+
+// ─── DIVIDER ─────────────────────────────────────────────────────────────────
+function Divider() {
+  const isMobile = useIsMobile()
+  return (
+    <FadeIn>
+      <div style={{
+        width: "48px", height: "1px",
+        background: "rgba(138,43,11,0.5)",
+        margin: isMobile ? "1.5rem 0" : "3rem 0",
+      }} />
+    </FadeIn>
+  )
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+const stats = [
+  { value: "2ème",             label: "Le Vietnam, 2ème exportateur mondial de café" },
+  { value: "1857",             label: "Début de la culture du café au Vietnam" },
+  { value: "Vietnam · France", label: "2 pays, 1 passion pour le café" },
+]
+
+function StatsBar() {
+  const isMobile = useIsMobile()
+  return (
+    <FadeIn delay={0.1}>
+      <div style={{
+        display: "flex",
+        flexWrap: "wrap",
+        borderTop: "1px solid rgba(70,30,5,0.3)",
+        borderBottom: "1px solid rgba(70,30,5,0.3)",
+        marginBottom: isMobile ? "3rem" : "6rem",
+      }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            flex: isMobile ? "1 1 100%" : "1 1 200px",
+            padding: isMobile ? "1.5rem 1rem" : "2.5rem 2rem",
+            borderRight: (!isMobile && i < stats.length - 1) ? "1px solid rgba(70,30,5,0.3)" : "none",
+            borderBottom: (isMobile && i < stats.length - 1) ? "1px solid rgba(70,30,5,0.15)" : "none",
+            textAlign: "center",
+          }}>
+            <p style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
+              color: "var(--color-cream)",
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: "0.6rem",
+            }}>
+              {s.value}
+            </p>
+            <p style={{
+              fontFamily: "Courier New, monospace",
+              fontSize: "11px",
+              color: "rgba(245,240,232,0.4)",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              lineHeight: 1.6,
+            }}>
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </div>
+    </FadeIn>
+  )
+}
+
+// ─── TEXT SECTION ─────────────────────────────────────────────────────────────
+function TextSection({ label, heading, paragraphs, align = "left" }) {
+  const isMobile = useIsMobile()
+  const isRight = align === "right" && !isMobile
+  return (
+    <FadeIn>
+      <div style={{
+        display: "flex",
+        justifyContent: isRight ? "flex-end" : "flex-start",
+        marginBottom: isMobile ? "3rem" : "45rem",                    /*Margin between texts*/
+      }}>
+        <div style={{ maxWidth: "620px", width: "100%" }}>
+          <SectionLabel>{label}</SectionLabel>
+          {heading && (
+            <h2 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "var(--color-cream)",
+              fontWeight: 800,
+              lineHeight: 1.15,
+              marginBottom: "1.75rem",
+            }}>
+              {heading}
+            </h2>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            {paragraphs.map((p, i) => (
+              <BodyText key={i}>{p}</BodyText>
+            ))}
+          </div>
+        </div>
+      </div>
+    </FadeIn>
+  )
+}
+
+// ─── PULL QUOTE ───────────────────────────────────────────────────────────────
+function PullQuote({ text }) {
+  return (
+    <FadeIn>
+      <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
+        <div style={{
+          width: "1px", height: "60px",
+          background: "rgba(138,43,11,0.4)",
+          margin: "0 auto 3rem",
+        }} />
+        <p style={{
+          fontFamily: "'Bodoni Moda', serif",
+          fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
+          color: "var(--color-cream)",
+          fontWeight: 700,
+          lineHeight: 1.4,
+          maxWidth: "700px",
+          margin: "0 auto",
+        }}>
+          {text}
+        </p>
+        <div style={{
+          width: "1px", height: "60px",
+          background: "rgba(138,43,11,0.4)",
+          margin: "3rem auto 0",
+        }} />
+      </div>
+    </FadeIn>
+  )
+}
+
+// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
+export default function OurStory() {
+  const isMobile = useIsMobile()
+  return (
+    <div style={{
+      background: "var(--color-bg)",
+      color: "var(--color-cream)",
+      position: "relative",
+      overflow: "hidden",
+      width: "100%",
+      minHeight: "100vh",
+    }}>
+
+      <Grain opacity={0.15} />
+      <Scrollbar />
+
+      {/* ── HERO HEADER ── */}
+      <section className={`relative ${isMobile ? "pt-28 pb-12" : "pt-48 pb-24"} px-6 overflow-hidden`}>
+        <Orb top="10%" left="80%" size="60vw" opacity={0.25} />
+        <Orb top="90%" left="10%" size="40vw" opacity={0.12} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <FadeIn>
+            <SectionLabel>Notre Histoire</SectionLabel>
+            <h1 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "var(--color-cream)",
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: "2rem",
+              whiteSpace: isMobile ? "normal" : "nowrap",
+            }}>
+              Un pont entre deux mondes
+            </h1>
+            <p style={{
+              fontFamily: "Courier New, monospace",
+              fontSize: "15px",
+              color: "rgba(245,240,232,0.45)",
+              maxWidth: "480px",
+              lineHeight: 1.85,
+            }}>
+              Du Vietnam à la France, nous mettons en lumière
+              des cafés d'exception encore méconnus en Europe.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── STATS BAR ── */}
+      <section className="relative px-6 overflow-hidden">
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <StatsBar />
+        </div>
+      </section>
+
+      {/* ── TEXT SECTIONS ── */}
+      <section className="relative px-6 overflow-hidden">
+        <Orb top="20%" left="90%" size="50vw" opacity={0.15} />
+        <Orb top="60%" left="5%"  size="45vw" opacity={0.12} />
+        <Orb top="90%" left="70%" size="40vw" opacity={0.10} />
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+
+          <TextSection
+            label="Origine"
+            heading="Nés de deux cultures"
+            align="left"
+            paragraphs={[
+              "Nous sommes un groupe de professionnels et de passionnés, basés entre le Vietnam et la France, réunis par une passion commune : le café.",
+              "Le Vietnam est aujourd'hui le deuxième plus grand exportateur mondial de café. Son histoire remonte au XIXe siècle, lorsque la culture du café a été introduite durant la période coloniale française. Pendant longtemps, le pays s'est concentré sur l'exportation de grains verts, torréfiés et valorisés à l'étranger.",
+            ]}
+          />
+
+          <Divider />
+
+          <TextSection
+            label="Transformation"
+            heading="Un savoir-faire en plein essor"
+            align="right"
+            paragraphs={[
+              "Mais depuis quelques décennies, une véritable transformation est en marche. Le Vietnam développe ses propres méthodes de torréfaction, affine son savoir-faire et révèle progressivement tout le potentiel de ses cafés.",
+              "Aujourd'hui, le marché local regorge de grains d'exception encore largement méconnus à l'international.",
+            ]}
+          />
+
+          <Divider />
+
+          <TextSection
+            label="Notre rôle"
+            heading="De l'origine à votre tasse"
+            align="left"
+            paragraphs={[
+              "Notre mission est de faire découvrir ces cafés uniques.",
+              "Nous sommes un point de contact direct entre les différents acteurs de la filière : agriculteurs, torréfacteurs et consommateurs. Nous intervenons comme importateurs, chasseurs de talents et intermédiaires, en sélectionnant rigoureusement nos partenaires sur le terrain et en créant des liens durables entre origine et destination.",
+            ]}
+          />
+
+          <Divider />
+
+          <TextSection
+            label="Le Robusta"
+            heading="L'espèce qui nous tient à coeur"
+            align="right"
+            paragraphs={[
+              "Au cœur de cette richesse se trouve principalement le robusta, l'espèce la plus cultivée au Vietnam. Longtemps sous-estimé en France, il révèle pourtant des profils aromatiques particulièrement séduisants : des notes chocolatées, caramélisées, parfois fruitées, avec une texture dense, une intensité maîtrisée et une belle douceur.",
+              "Polyvalent et accessible, il s'apprécie aussi bien en hiver qu'en été, et se décline dans une grande variété de préparations.",
+              "Nous sélectionnons, torréfions et proposons des cafés vietnamiens de caractère, en mettant en avant leur origine, leur qualité et leur singularité, afin de créer un pont durable entre producteurs locaux et amateurs de café en Europe.",
+            ]}
+          />
+
+        </div>
+      </section>
+
+      {/* ── PULL QUOTE ── */}
+      <section className="relative px-6 overflow-hidden">
+        <Orb top="50%" left="50%" size="60vw" opacity={0.12} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <PullQuote text="Un pont durable entre producteurs locaux et amateurs de café en Europe." />
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="relative px-6 pb-32 overflow-hidden">
+        <div className="relative z-10 max-w-5xl mx-auto text-center">
+          <FadeIn>
+            <SectionLabel>Nos produits</SectionLabel>
+            <h2 style={{
+              fontFamily: "'Bodoni Moda', serif",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+              color: "var(--color-cream)",
+              fontWeight: 800,
+              marginBottom: "2rem",
+            }}>
+              Découvrez nos cafés vietnamiens
+            </h2>
+            <Link
+              to="/products"
+              onClick={() => window.scrollTo(0, 0)}
+              style={{
+                fontFamily: "Courier New, monospace",
+                fontSize: "13px",
+                textTransform: "uppercase",
+                letterSpacing: "0.25em",
+                color: "rgba(var(--color-cream-rgb), 0.5)",
+                borderBottom: "1px solid rgba(70,30,5,0.5)",
+                paddingBottom: "6px",
+                textDecoration: "none",
+                transition: "color 0.3s ease",
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--color-amber)"}
+              onMouseLeave={e => e.currentTarget.style.color = "rgba(var(--color-cream-rgb), 0.5)"}
+            >
+              Voir nos produits →
+            </Link>
+          </FadeIn>
+        </div>
+      </section>
+
+      <Footer />
+
+    </div>
+  )
+}
