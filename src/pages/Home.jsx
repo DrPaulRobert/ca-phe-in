@@ -157,7 +157,7 @@ function FeaturedCoffeeCard({ coffee, index }) {
           <img
             src={coffee.image}
             alt={coffee.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "contain", transform: "scale(1.2)" }}        /* "scale(1.2)" → zomm in*/
           />
         </div>
         <div style={{ padding: "1.75rem" }}>
@@ -221,8 +221,9 @@ function SectionPreview({ preview, index, isMobile }) {
 
   const imageBlock = (
     <div style={{
-      flex: `0 0 ${preview.imageSize || "50%"}`,
-      maxWidth: preview.imageSize || "50%",
+      flex: `0 0 clamp(280px, 40vw, 400px)`,
+      Width: "clamp(280px, 40vw, 500px)",
+      flexShrink: 0,  // ← prevents shrinking below the clamp value
       position: "relative",
       minHeight: isMobile ? "140px" : "420px",
       background: "transparent",
@@ -280,8 +281,9 @@ function SectionPreview({ preview, index, isMobile }) {
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
-      padding: isMobile ? "0" : "0 2rem",
+      minWidth: isMobile ? 0 : "480px",                                                             /* Text width */
+      justifyContent: "flex-start",                                                                 /* text position */
+      padding: isMobile ? "0 1rem 0 0" : "0 2rem",
     }}>
       <p style={{
         fontFamily: "Courier New, monospace",
@@ -295,7 +297,7 @@ function SectionPreview({ preview, index, isMobile }) {
       </p>
       <h3 style={{
         fontFamily: "'Bodoni Moda', serif",
-        fontSize: "clamp(1.6rem, 2.8vw, 2.4rem)",
+        fontSize: "clamp(1.8rem, 3.5vw, 3rem)",                          /* title fontsize */
         color: "var(--color-cream)",
         fontWeight: 800,
         marginBottom: "1.25rem",
@@ -305,7 +307,7 @@ function SectionPreview({ preview, index, isMobile }) {
       </h3>
       <p style={{
         fontFamily: "Courier New, monospace",
-        fontSize: "20px",/*isMobile ? "12px" : "14px",*/
+        fontSize: "clamp(16px, 1.5vw, 25px)",                            /* text fontsize */ 
         color: "rgba(245,240,232,0.45)",
         lineHeight: 1.85,
         marginBottom: "1.5rem",
@@ -340,8 +342,8 @@ function SectionPreview({ preview, index, isMobile }) {
       <div style={{
         display: "flex",
         flexDirection: isMobile ? "column" : (isRight ? "row-reverse" : "row"),
-        gap: isMobile ? "1.5rem" : "3rem",
-        alignItems: "center",
+        gap: isMobile ? "1.5rem" : "clamp(2rem, 8vw, 10rem)",                                              /* Gap between image and text */
+        alignItems: "flex-start",                                                                          /* Aligns text and image */
       }}>
         {imageBlock}
         {textBlock}
@@ -506,7 +508,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION PREVIEWS — alternating left/right ── */}
-        <section className="relative py-32 px-6 overflow-hidden">
+        <section className="relative py-2 px-6 overflow-hidden">
         <Orb top="15%" left="30%" size="45vw" opacity={0.1} />    
         <Orb top="30%" left="30%" size="45vw" opacity={0.1} /> 
         <Orb top="45%" left="60%" size="45vw" opacity={0.1} />

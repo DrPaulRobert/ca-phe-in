@@ -594,7 +594,7 @@ export default function Culture() {
           <FadeIn>
             <div style={{ width: "48px", height: "1px", background: "rgba(138,43,11,0.4)", marginBottom: "2rem" }} />
             <SectionLabel>Références</SectionLabel>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", overflowWrap: "break-word", wordBreak: "break-all" }}>
               {[
                 { num: 1, authors: "Vivu Journeys", year: 2026, title: "Vietnamese Coffee: History, Unique Brewing & Regional Favorites", url: "https://vivujourneys.com/destinations/vietnam/vietnamese-coffee-history-unique-brewing-regional-favorites/" },
                 { num: 2, authors: "Wikipedia", year: 2026, title: "Vietnamese iced coffee", url: "https://en.wikipedia.org/wiki/Vietnamese_iced_coffee" },
@@ -627,6 +627,8 @@ export default function Culture() {
                       color: "rgba(194,68,15,0.6)",
                       textDecoration: "none",
                       borderBottom: "1px solid rgba(194,68,15,0.3)",
+                      wordBreak: "break-all",
+                      overflowWrap: "break-word",
                     }}
                       onMouseEnter={e => e.currentTarget.style.color = "#c2440f"}
                       onMouseLeave={e => e.currentTarget.style.color = "rgba(194,68,15,0.6)"}

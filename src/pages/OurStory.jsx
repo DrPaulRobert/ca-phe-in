@@ -173,7 +173,7 @@ function TextSection({ label, heading, paragraphs, align = "left" }) {
       <div style={{
         display: "flex",
         justifyContent: isRight ? "flex-end" : "flex-start",
-        marginBottom: isMobile ? "3rem" : "45rem",                    /*Margin between texts*/
+        marginBottom: isMobile ? "3rem" : "30rem",                    /*Margin between texts*/
       }}>
         <div style={{ maxWidth: "620px", width: "100%" }}>
           <SectionLabel>{label}</SectionLabel>

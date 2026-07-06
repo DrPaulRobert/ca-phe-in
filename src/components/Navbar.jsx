@@ -156,7 +156,7 @@ function NavIcon({ label, to, icon, circle, marginRight, labelTop, labelLeft, is
       <span
         className="font-mono uppercase tracking-widest"
         style={{
-          fontSize: "12px",
+          fontSize: "clamp(8px, 0.9vw, 12px)",                                                                                  /* NAVICON fontsize text*/
           position: "absolute",
           top: labelTop || "2.7rem",
           left: `calc(50% + ${labelLeft || 0}px)`,
@@ -203,7 +203,7 @@ function PillIcon({ label, to, icon, labelTop, labelLeft, isHome, isActive, hove
       <span
         className="font-mono uppercase tracking-widest"
         style={{
-          fontSize: "12px",
+          fontSize: "clamp(9px, 0.9vw, 12px)",                                                                                                 /* PILL ICON fontsize text*/
           position: "absolute",
           top: labelTop || "2.2rem",
           left: `calc(50% + ${labelLeft || 0}px)`,
@@ -331,7 +331,7 @@ export default function Navbar() {
       `}</style>
 
       <nav className="fixed top-0 left-0 w-full z-50" style={{
-        background: (scrolled || menuOpen || drawerOpen) ? "rgba(2,1,0,0.85)" : "transparent",
+        background: (scrolled || menuOpen || drawerOpen) ? "rgba(2,1,0,0.45)" : "transparent",                   /* navbar opacity 0.45 - 0.85 */
         backdropFilter: (scrolled || menuOpen || drawerOpen) ? "blur(5px)" : "none",
         transition: "background 0.4s ease, backdrop-filter 0.4s ease",
       }}>
