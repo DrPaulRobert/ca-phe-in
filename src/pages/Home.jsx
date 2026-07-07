@@ -375,7 +375,7 @@ export default function Home() {
       <Scrollbar />
 
       {/* ── HERO ── */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center">   {/* overflow-hidden */}
       {/* Background image — blended into dark */}
       <div style={{
       position: "absolute",
