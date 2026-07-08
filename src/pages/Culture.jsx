@@ -3,6 +3,12 @@ import { Link } from "react-router-dom"
 import Grain from "../components/Grain"
 import Scrollbar from "../components/Scrollbar"
 import Footer from "../components/Footer"
+import imgCulture1 from "../assets/pic1.png"
+import imgCulture2 from "../assets/pic2.png"
+import imgEggCoffee  from "../assets/egg.png"
+import imgSaltCoffee from "../assets/sel.png"
+import imgIcedCoffee from "../assets/lait.png"
+import imgPhinPieces from "../assets/phin00.png"
 
 // ─── MOBILE DETECTION ────────────────────────────────────────────────────────
 function useIsMobile() {
@@ -173,7 +179,21 @@ function RecipeCard({ recipe }) {
         marginBottom: "2rem",
       }}>
         {/* Image placeholder */}
-        <ImagePlaceholder hint={recipe.imagehint} aspectRatio="16/9" />
+        {recipe.image ? (
+        <img
+            src={recipe.image}
+            alt={recipe.name}
+            style={{
+            width: "100%",
+            aspectRatio: "16/9",
+            objectFit: "cover",
+            objectPosition: "center",
+            display: "block",
+            }}
+        />
+        ) : (
+  <ImagePlaceholder hint={recipe.imagehint} aspectRatio="16/9" />
+)}
 
         <div style={{ padding: "2rem" }}>
           {/* Header */}
@@ -334,6 +354,7 @@ const recipes = [
     difficulty: 3,
     sugar: "high",
     imagehint: "café à l'œuf dans une tasse, vue de dessus",
+    image: imgEggCoffee,
     ingredients: [
       "1 tasse de café fort préparé au phin (~80 ml)",
       "2 jaunes d'œufs frais",
@@ -355,6 +376,7 @@ const recipes = [
     difficulty: 2,
     sugar: "medium",
     imagehint: "café au sel avec crème sur le dessus, vue de côté",
+    image: imgSaltCoffee,
     ingredients: [
       "1 tasse de café préparé au phin (~80 ml)",
       "3 cuillères à soupe de lait concentré sucré",
@@ -376,6 +398,7 @@ const recipes = [
     difficulty: 1,
     sugar: "high",
     imagehint: "grand verre de café glacé avec lait concentré, condensation sur le verre",
+    image: imgIcedCoffee,
     ingredients: [
       "1 portion de café fort préparé au phin (~80-100 ml)",
       "2 à 3 cuillères à soupe de lait concentré sucré",
@@ -435,7 +458,19 @@ export default function Culture() {
           </FadeIn>
 
           <FadeIn delay={0.1}>
-            <ImagePlaceholder hint="plantation de café dans les hauts plateaux du Vietnam, ambiance brumeuse" aspectRatio="16/9" />
+            <img
+             src={imgCulture1}
+             alt=""
+             style={{
+             width: "100%",
+             aspectRatio: "2/1",   // ← match your image ratio
+             objectFit: "cover",
+             objectPosition: "center",
+             marginBottom: "2rem",
+             display: "block",
+             opacity: 0.9,
+             }}
+            />
           </FadeIn>
 
           <FadeIn delay={0.15}>
@@ -463,7 +498,19 @@ export default function Culture() {
           </FadeIn>
 
           <FadeIn delay={0.1}>
-            <ImagePlaceholder hint="rue de Hanoi ou Saigon avec terrasse de café, ambiance matinale" aspectRatio="16/9" />
+            <img
+             src={imgCulture2}
+             alt=""
+             style={{
+             width: "100%",
+             aspectRatio: "2/1",   // ← match your image ratio
+             objectFit: "cover",
+             objectPosition: "center",
+             marginBottom: "2rem",
+             display: "block",
+             opacity: 0.9,
+             }}
+            />
           </FadeIn>
 
           <FadeIn delay={0.15}>
@@ -507,8 +554,22 @@ export default function Culture() {
           </FadeIn>
 
           <FadeIn delay={0.1}>
-            <ImagePlaceholder hint="phin complet avec ses 4 pièces, vue éclatée sur fond sombre" aspectRatio="4/3" />
-          </FadeIn>
+            <img
+                src={imgPhinPieces}
+                alt="Filtre phin vietnamien démonté en 4 pièces"
+                style={{
+                width: "60%",
+                margin: "0 auto",
+                display: "block",
+                aspectRatio: "1/1",                                                                                                   // ← adjust to match image ratio
+                objectFit: "cover",
+                objectPosition: "center",
+                display: "block",
+                marginBottom: "2rem",
+                /*marginLeft: "8rem",*/
+                }}
+            />
+            </FadeIn>
 
           {/* Steps */}
           <div style={{ marginTop: "2rem" }}>
@@ -543,7 +604,7 @@ export default function Culture() {
                       lineHeight: 1.2,
                     }}>{step.title}</h3>
                     <BodyText>{step.text}</BodyText>
-                    <ImagePlaceholder hint={step.imagehint} aspectRatio="16/9" />
+                    {/*<ImagePlaceholder hint={step.imagehint} aspectRatio="16/9" />*/}
                   </div>
                 </div>
               </FadeIn>

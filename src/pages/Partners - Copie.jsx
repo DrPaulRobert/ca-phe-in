@@ -4,11 +4,6 @@ import Scrollbar from "../components/Scrollbar"
 import Footer from "../components/Footer"
 import franceSrc from "../assets/FranceTransparent.png"
 import vietnamSrc from "../assets/VietnamTransparent.png"
-import torrParisSrc from "../assets/TorrParis.png"
-import toulouseSrc from "../assets/toulouse.png"
-import hanoiSrc from "../assets/Hanoi.png"
-import daklakSrc from "../assets/daklak.png"
-
 
 // ─── MOBILE DETECTION HOOK ───────────────────────────────────────────────────
 function useIsMobile() {
@@ -81,14 +76,12 @@ const francePartners = [
     name: "Partenaire Paris",
     city: "Paris",
     description: "Torréfacteur artisanal installé dans le 11ème arrondissement.",
-    image: torrParisSrc,
   },
   {
     id: "toulouse",
     name: "Partenaire Toulouse",
     city: "Toulouse",
     description: "Distributeur régional couvrant le Sud-Ouest de la France.",
-    image: toulouseSrc,
   },
 ]
 
@@ -98,14 +91,12 @@ const vietnamPartners = [
     name: "Partenaire Hanoi",
     city: "Hanoi",
     description: "Torréfacteur historique de la capitale.",
-    image: hanoiSrc,
   },
   {
     id: "daklak",
     name: "Partenaire Dak Lak",
     city: "Dak Lak",
     description: "Producteur et coopérative agricole au cœur des Hauts Plateaux.",
-    image: daklakSrc,
   },
 ]
 
@@ -354,34 +345,19 @@ function ConnectingLine({ mapRef, cardRef, dotId, rootRef, isFrance }) {
 function PartnerInfo({ partner, cardRef }) {
   return (
     <div ref={cardRef} style={{ animation: "fadeIn 0.3s ease forwards", opacity: 0 }}>
-      {/* Image — real or placeholder */}
-      {partner.image ? (
-        <img
-          src={partner.image}
-          alt={partner.name}
-          style={{
-            width: "100%", aspectRatio: "16/9",
-            objectFit: "cover", objectPosition: "center",
-            marginBottom: "1.5rem",
-            display: "block",
-            opacity: 0.75,                                                                                           // ← 0 = invisible, 1 = full
-          }}
-        />
-      ) : (
-        <div style={{
-          width: "100%", aspectRatio: "3/2",                                                                                   /*16/9*/
-          background: "radial-gradient(ellipse at 40% 40%, rgba(138,43,11,0.25) 0%, #0a0604 80%)",
-          marginBottom: "1.5rem",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          border: "1px solid rgba(70,30,5,0.3)",
-        }}>
-          <p style={{
-            fontFamily: "Courier New, monospace", fontSize: "11px",
-            color: "rgba(245,240,232,0.2)", textTransform: "uppercase",
-            letterSpacing: "0.2em",
-          }}>photo à venir</p>
-        </div>
-      )}
+      <div style={{
+        width: "100%", aspectRatio: "16/9",
+        background: "radial-gradient(ellipse at 40% 40%, rgba(138,43,11,0.25) 0%, #0a0604 80%)",
+        marginBottom: "1.5rem",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        border: "1px solid rgba(70,30,5,0.3)",
+      }}>
+        <p style={{
+          fontFamily: "Courier New, monospace", fontSize: "11px",
+          color: "rgba(245,240,232,0.2)", textTransform: "uppercase",
+          letterSpacing: "0.2em",
+        }}>photo à venir</p>
+      </div>
       <p style={{
         fontFamily: "Courier New, monospace", fontSize: "11px",
         color: "rgba(138,43,11,0.9)", textTransform: "uppercase",
@@ -425,8 +401,8 @@ export default function Partners() {
 
   const [country,    setCountry]    = useState("france")
   const [visible,    setVisible]    = useState(true)
-  const [selectedFR, setSelectedFR] = useState(francePartners.find(p => p.id === "paris") || null)
-  const [selectedVN, setSelectedVN] = useState(vietnamPartners.find(p => p.id === "hanoi") || null)
+  const [selectedFR, setSelectedFR] = useState(null)
+  const [selectedVN, setSelectedVN] = useState(null)
 
   const mapRef    = useRef(null)
   const cardRef   = useRef(null)

@@ -282,7 +282,7 @@ function SectionPreview({ preview, index, isMobile }) {
       display: "flex",
       flexDirection: "column",
       minWidth: isMobile ? 0 : "480px",                                                             /* Text width */
-      justifyContent: "flex-start",                                                                 /* text position */
+      justifyContent: "center",                                                                 /* text position */    /* center */    /* flex-end */
       padding: isMobile ? "0 1rem 0 0" : "0 2rem",
     }}>
       <p style={{
@@ -297,7 +297,7 @@ function SectionPreview({ preview, index, isMobile }) {
       </p>
       <h3 style={{
         fontFamily: "'Bodoni Moda', serif",
-        fontSize: "clamp(1.8rem, 3.5vw, 3rem)",                          /* title fontsize */
+        fontSize: "clamp(1.5rem, 3vw, 2rem)",                          /* title fontsize */
         color: "var(--color-cream)",
         fontWeight: 800,
         marginBottom: "1.25rem",
@@ -307,8 +307,8 @@ function SectionPreview({ preview, index, isMobile }) {
       </h3>
       <p style={{
         fontFamily: "Courier New, monospace",
-        fontSize: "clamp(16px, 1.5vw, 25px)",                            /* text fontsize */ 
-        color: "rgba(245,240,232,0.45)",
+        fontSize: "clamp(0.9rem, 1vw, 1.5rem)",                            /* text fontsize */ /* "clamp(16px, 1.5vw, 25px)" */ 
+        color: "rgba(245,240,232,0.65)",
         lineHeight: 1.85,
         marginBottom: "1.5rem",
       }}>
@@ -343,7 +343,7 @@ function SectionPreview({ preview, index, isMobile }) {
         display: "flex",
         flexDirection: isMobile ? "column" : (isRight ? "row-reverse" : "row"),
         gap: isMobile ? "1.5rem" : "clamp(2rem, 8vw, 10rem)",                                              /* Gap between image and text */
-        alignItems: "flex-start",                                                                          /* Aligns text and image */
+        alignItems: "stretch",                                                                          /* Aligns text and image */
       }}>
         {imageBlock}
         {textBlock}
@@ -415,7 +415,7 @@ export default function Home() {
             style={{
               fontFamily: "Courier New, monospace",
               fontStyle: "normal",
-              fontSize: "clamp(0.9rem, 1vw, 1.5rem)",      /* Min / Preferred / Max */
+              fontSize: "clamp(0.9rem, 1vw, 1.5rem)",                                                                         /* Min / Preferred / Max */
               lineHeight: 1.5,
               color: "var(--color-cream)",
               paddingTop: "6rem",   // ← increase to move down, decrease to move up
