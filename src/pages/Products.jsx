@@ -400,9 +400,9 @@ export default function Products() {
           </p>
           <h1 style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: "clamp(3rem, 7vw, 6rem)",
+            fontSize: "clamp(1.8rem, 3vw, 2.66rem)",
             color: "var(--color-cream)",
-            fontWeight: 800, fontStyle: "italic",
+            fontWeight: 800, /*fontStyle: "italic",*/
             lineHeight: 1, marginBottom: "1.5rem",
           }}>
             Configurez votre café

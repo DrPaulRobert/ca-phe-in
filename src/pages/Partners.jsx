@@ -513,10 +513,10 @@ export default function Partners() {
           {/* Country name */}
           <h2 style={{
             fontFamily: "'Bodoni Moda', serif",
-            fontSize: isMobile ? "clamp(1.5rem, 6vw, 2rem)" : "clamp(1.8rem, 3vw, 2.8rem)",//"clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
+            fontSize: isMobile ? "clamp(1.5rem, 6vw, 2rem)" : "clamp(1.8rem, 3vw, 2.6rem)",//"clamp(2.5rem, 10vw, 3.5rem)" : "clamp(3rem, 6vw, 5.5rem)",
             color: "var(--color-cream)", fontWeight: 800,
             lineHeight: 2,
-            marginBottom: isMobile ? "1.5rem" : "2.5rem",
+            marginBottom: isMobile ? "1.5rem" : "2rem",
             // on mobile Vietnam, push title down below the sticky "back to France" button
             marginTop: (isMobile && !isFrance) ? "5rem" : 0,
             textAlign: isMobile ? "left" : (isFrance ? "left" : "right"), // "center",

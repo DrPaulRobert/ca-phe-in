@@ -447,11 +447,11 @@ export default function Culture() {
             <SectionLabel>Histoire & Culture</SectionLabel>
             <h2 style={{
               fontFamily: "'Bodoni Moda', serif",
-              fontSize: "clamp(1.8rem, 3vw, 2.8rem)",
+              fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
               color: "var(--color-cream)",
               fontWeight: 800,
               marginBottom: "2rem",
-              lineHeight: 1.15,
+              lineHeight: 1,
             }}>
               Une histoire qui remonte au XIXe siècle
             </h2>
